@@ -2,6 +2,7 @@ package com.uml_review.uml.Menus.Mapper;
 
 import com.uml_review.uml.Menus.Entity.Dish;
 import com.uml_review.uml.Menus.Entity.Str;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -41,6 +42,9 @@ public interface MenuMapper {
             "\t\t`name`,`avatar`,`discription`,`price`,`level`,\n" +
             "\t\t`loc_canteen`as \"loc_Canteen\",\n" +
             "\t\t`loc_floor`as \"loc_Floor\",\n" +
-            "\t\t`loc_window`as \"loc_Window\"  FROM menu WHERE `name` like \"${words}\"")
+            "\t\t`loc_window`as \"loc_Window\"  FROM menu WHERE `name` like \"${words}\" order by `level`desc")
     List<Dish> query(Str str);
+
+    @Delete("delete from menu where `dish_id`=#{param1}")
+    Integer dish_delete(Integer dishId);
 }

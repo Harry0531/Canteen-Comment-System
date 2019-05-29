@@ -104,4 +104,19 @@ public class MenuController {
             return ResultUtil.success(dishes);
         }
     }
+
+    @RequestMapping("delete")
+    public  Object dish_Delete(
+            @RequestParam Integer dishId,
+            HttpServletRequest request
+    )throws  Exception{
+        data.clear();
+        Integer m = menuMapper.dish_delete(dishId);
+        if(m==0){
+                return ResultUtil.error(500,"未知错误");
+            }else{
+                data.put("status","删除成功");
+                return ResultUtil.success(data);
+            }
+        }
 }

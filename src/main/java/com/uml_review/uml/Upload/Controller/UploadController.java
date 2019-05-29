@@ -26,9 +26,9 @@ public class UploadController {
     Map<String,Object> data = new HashMap<>();
 
     @RequestMapping("icon")
-    public Object img(
+    public Object icon_img(
             @RequestParam("file")MultipartFile file,
-            HttpServletRequest reques
+            HttpServletRequest request
     )throws  Exception{
         data.clear();
         if(file.isEmpty()){
@@ -36,7 +36,7 @@ public class UploadController {
         }
 
         String filename =  IdUtils.genImageName()+file.getOriginalFilename();
-        System.out.println("/home/admin/icon/"+filename);
+       // System.out.println("/home/admin/icon/"+filename);
         byte[] buffer = new byte[(int)file.getSize()];
         file.getInputStream().read(buffer);
 
@@ -52,6 +52,36 @@ public class UploadController {
         data.put("filename",filename);
         return ResultUtil.success(data);
     }
+
+    @RequestMapping("comment")
+    public Object comment_img(
+            @RequestParam("file")MultipartFile file,
+            HttpServletRequest request
+    )throws  Exception{
+        data.clear();
+        if(file.isEmpty()){
+            return ResultUtil.error(505,"传入图片为空");
+        }
+
+        String filename =  IdUtils.genImageName()+file.getOriginalFilename();
+        //System.out.println("/home/admin//"+filename);
+        byte[] buffer = new byte[(int)file.getSize()];
+        file.getInputStream().read(buffer);
+
+        BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream("/home/admin/comment/"+filename));
+        try{
+            out.write(file.getBytes());
+            out.flush();
+            out.close();
+        }catch (Exception e){
+            return ResultUtil.error(500,"未知错误");
+        }
+        data.put("status","上传成功");
+        data.put("filename",filename);
+        return ResultUtil.success(data);
+    }
+
+
 }
 
 
