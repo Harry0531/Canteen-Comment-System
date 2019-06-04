@@ -2,6 +2,7 @@ package com.uml_review.uml.Login.Mapper;
 
 import com.uml_review.uml.Login.Entity.Key;
 import com.uml_review.uml.Login.Entity.Login;
+import com.uml_review.uml.Login.Entity.User;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -19,4 +20,9 @@ public interface LoginMapper {
 
     @Select("select `user_id` as \"userId\",`password` from user where `username`=#{param1} or `email`=#{param1};")
     Key login(String str);
+
+    @Select("select `user_id` as \"userId\",\n" +
+            "\t\t\t`username` ,`password`\n" +
+            "\t\t\tfrom `user` where `user_id`=#{param1};")
+    User findUserById(Integer userId);
 }

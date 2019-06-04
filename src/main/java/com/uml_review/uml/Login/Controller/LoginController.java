@@ -1,8 +1,11 @@
 package com.uml_review.uml.Login.Controller;
 
 
+import com.uml_review.uml.Annotation.PassToken;
+import com.uml_review.uml.Annotation.UserLoginToken;
 import com.uml_review.uml.Login.Entity.Key;
 import com.uml_review.uml.Login.Entity.Login;
+import com.uml_review.uml.Login.Entity.User;
 import com.uml_review.uml.Login.Mapper.LoginMapper;
 import com.uml_review.uml.Utils.MailUtils;
 import com.uml_review.uml.Utils.ResultUtil;
@@ -29,6 +32,7 @@ public class LoginController {
 
     Map<String,Object> data = new HashMap<>();
 
+    @PassToken
     @RequestMapping("verification_code")
     public  Object verification(
             @RequestParam("email")String email,
@@ -42,6 +46,7 @@ public class LoginController {
         return ResultUtil.success(data);
     }
 
+    @PassToken
     @RequestMapping("verification_username")
     public Object verification_username(
             @RequestParam("username")String username,
@@ -61,6 +66,7 @@ public class LoginController {
         return ResultUtil.success(data);
     }
 
+    @PassToken
     @RequestMapping("register")
     public  Object register(
             @Valid Login param,
@@ -77,6 +83,7 @@ public class LoginController {
         }
     }
 
+    @PassToken
     @RequestMapping("login")
     public Object login(
             @RequestParam("username")String username,
@@ -91,6 +98,13 @@ public class LoginController {
             return ResultUtil.success(data);
         }
         if(key.getPassword().equals(password)){
+            User user  =new User();
+            user.setUserId(String.valueOf(key.getUserId()));
+            user.setUsername(username);
+            user.setPassword(password);
+            String token =user.getToken(user);
+
+            data.put("token",token);
             data.put("result","登录成功");
             data.put("user_id",key.getUserId());
             return ResultUtil.success(data);

@@ -11,17 +11,21 @@ import java.util.List;
 @Mapper
 public interface CommentMapper {
 
-    @Select("Insert into comments (`user_id`,`dish_id`,`level`,`content`,`photo`)\n" +
+    @Select("update menu set `comments`=`comments`+1\n" +
+            "\t\twhere `dish_id`=#{dishId};" +
+            "Insert into comments (`user_id`,`dish_id`,`level`,`content`,`photo`)\n" +
             "\t\t\t\tvalues (#{userId},#{dishId},#{level},#{content},#{photo});\n" +
             "\t\t\t\tselect last_insert_id()")
     Integer add(Comment comment);
 
 
-    @Select("select * from comments where `user_id`=#{param1} and `comment_id`=#{param2}")
+    @Select("select `dish_id` from comments where `user_id`=#{param1} and `comment_id`=#{param2}")
     Integer verification(Integer userId,Integer commentId);
 
-    @Delete("delete from comments where `comment_id`=#{param1}")
-    Integer delete(Integer commentId);
+    @Delete("delete from comments where `comment_id`=#{param1};" +
+            "update menu set `comments`=`comments`-1\n" +
+            "\t\twhere `dish_id`=#{param2};")
+    Integer delete(Integer commentId,Integer dishId);
 
     @Select("select `comment_id`as\"commentId\",\n" +
             "\t\t`dish_id`as \"dishId\",\n" +

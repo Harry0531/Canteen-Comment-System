@@ -1,5 +1,6 @@
 package com.uml_review.uml.Upload.Controller;
 
+import com.uml_review.uml.Annotation.PassToken;
 import com.uml_review.uml.Utils.FtpUtils;
 import com.uml_review.uml.Utils.IdUtils;
 import com.uml_review.uml.Utils.ResultUtil;
@@ -52,6 +53,7 @@ public class UploadController {
         data.put("filename",filename);
         return ResultUtil.success(data);
     }
+
 
     @RequestMapping("comment")
     public Object comment_img(

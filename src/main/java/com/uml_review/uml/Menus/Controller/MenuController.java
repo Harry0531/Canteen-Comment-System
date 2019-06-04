@@ -1,5 +1,7 @@
 package com.uml_review.uml.Menus.Controller;
 
+import com.uml_review.uml.Annotation.PassToken;
+import com.uml_review.uml.Annotation.UserLoginToken;
 import com.uml_review.uml.Menus.Entity.Dish;
 import com.uml_review.uml.Menus.Entity.Str;
 import com.uml_review.uml.Menus.Mapper.MenuMapper;
@@ -24,6 +26,7 @@ public class MenuController {
 
     Map<String,Object> data = new HashMap<>();
 
+    @UserLoginToken
     @RequestMapping("add")
     public Object dish_Add(
             @Valid Dish dish,
@@ -43,7 +46,7 @@ public class MenuController {
         }
     }
 
-
+    @UserLoginToken
     @RequestMapping("info")
     public Object dish_Info(
             @RequestParam Integer dishId,
@@ -61,6 +64,7 @@ public class MenuController {
         }
     }
 
+    @UserLoginToken
     @RequestMapping("update")
     public Object dish_Update(
             @Valid Dish dish,
@@ -90,6 +94,7 @@ public class MenuController {
         }
     }
 
+    @UserLoginToken
     @RequestMapping("query")
     public Object dish_query(
             @RequestParam(value="keywords") String keywords,
@@ -105,6 +110,7 @@ public class MenuController {
         }
     }
 
+    @UserLoginToken
     @RequestMapping("delete")
     public  Object dish_Delete(
             @RequestParam Integer dishId,

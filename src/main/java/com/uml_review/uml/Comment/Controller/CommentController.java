@@ -1,5 +1,7 @@
 package com.uml_review.uml.Comment.Controller;
 
+import com.uml_review.uml.Annotation.PassToken;
+import com.uml_review.uml.Annotation.UserLoginToken;
 import com.uml_review.uml.Comment.Entity.Comment;
 import com.uml_review.uml.Comment.Entity.TComment;
 import com.uml_review.uml.Comment.Mapper.CommentMapper;
@@ -25,6 +27,7 @@ public class CommentController {
 
     Map<String,Object> data = new HashMap<>();
 
+    @UserLoginToken
     @RequestMapping("add")
     public Object comment_Add(
             @Valid Comment comment,
@@ -44,6 +47,7 @@ public class CommentController {
         }
     }
 
+    @UserLoginToken
     @RequestMapping("delete")
     public  Object comment_Delete(
             @RequestParam Integer userId,
@@ -56,8 +60,7 @@ public class CommentController {
         if(m==0){
             return ResultUtil.error(505,"传入参数不匹配");
         }else{
-            m=0;
-            m = commentMapper.delete(commentId);
+            m = commentMapper.delete(commentId,m);
             if(m==0){
                 return ResultUtil.error(500,"未知错误");
             }else{
@@ -68,6 +71,7 @@ public class CommentController {
 
     }
 
+    @UserLoginToken
     @RequestMapping("query")
     public Object comment_Query(
             @RequestParam Integer status,
