@@ -1,4 +1,4 @@
-package com.uml_review.uml.Annotation;
+package com.uml_review.uml.Utils.Annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

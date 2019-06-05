@@ -19,7 +19,7 @@ public class User {
 
     public  String getToken(User user){
         String token="";
-        token = JWT.create().withAudience(user.getUserId()).withExpiresAt(new Date(System.currentTimeMillis()+60*60*24)).sign(Algorithm.HMAC256(user.getPassword()));
+        token = JWT.create().withAudience(user.getUserId()).withExpiresAt(new Date(System.currentTimeMillis()+60*60*24*60)).sign(Algorithm.HMAC256(user.getPassword()));
         return token;
     }
 }

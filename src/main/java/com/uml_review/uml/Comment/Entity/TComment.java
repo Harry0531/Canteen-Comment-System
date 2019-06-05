@@ -16,4 +16,6 @@ public class TComment {
     String content;
     String photo;
     Date time;
+
+    Integer like_me;
 }

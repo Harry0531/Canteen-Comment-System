@@ -1,15 +1,13 @@
 package com.uml_review.uml.Login.Controller;
 
 
-import com.uml_review.uml.Annotation.PassToken;
-import com.uml_review.uml.Annotation.UserLoginToken;
+import com.uml_review.uml.Utils.Annotation.PassToken;
 import com.uml_review.uml.Login.Entity.Key;
 import com.uml_review.uml.Login.Entity.Login;
 import com.uml_review.uml.Login.Entity.User;
 import com.uml_review.uml.Login.Mapper.LoginMapper;
 import com.uml_review.uml.Utils.MailUtils;
 import com.uml_review.uml.Utils.ResultUtil;
-import org.apache.ibatis.annotations.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;

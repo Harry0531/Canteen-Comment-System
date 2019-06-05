@@ -1,16 +1,9 @@
 package com.uml_review.uml.Upload.Controller;
 
-import com.uml_review.uml.Annotation.PassToken;
-import com.uml_review.uml.Utils.FtpUtils;
 import com.uml_review.uml.Utils.IdUtils;
 import com.uml_review.uml.Utils.ResultUtil;
-import lombok.Value;
-import org.apache.catalina.User;
-import org.joda.time.DateTime;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 

@@ -22,7 +22,7 @@ public interface MenuMapper {
             "\t\t`loc_canteen`as\"loc_Canteen\",\n" +
             "\t\t`loc_floor`as \"loc_Floor\",\n" +
             "\t\t`loc_window`as \"loc_Window\",\n" +
-            "\t\t`discription`\n" +
+            "\t\t`discription`\n,`likes`,`comments`" +
             "\t\tfrom menu where `dish_id`=#{param1};")
     Dish info(Integer dishId);
 
@@ -39,7 +39,7 @@ public interface MenuMapper {
 
 
     @Select("SELECT dish_id as \"dishId\",\n" +
-            "\t\t`name`,`avatar`,`discription`,`price`,`level`,\n" +
+            "\t\t`name`,`avatar`,`discription`,`price`,`level`,`likes`,`comments`,\n" +
             "\t\t`loc_canteen`as \"loc_Canteen\",\n" +
             "\t\t`loc_floor`as \"loc_Floor\",\n" +
             "\t\t`loc_window`as \"loc_Window\"  FROM menu WHERE `name` like \"${words}\" order by `level`desc")

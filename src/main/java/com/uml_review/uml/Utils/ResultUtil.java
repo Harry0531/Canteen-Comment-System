@@ -1,6 +1,6 @@
 package com.uml_review.uml.Utils;
 
-import com.uml_review.uml.Core.Msg;
+import com.uml_review.uml.Utils.Core.Msg;
 
 public class ResultUtil {
     /**

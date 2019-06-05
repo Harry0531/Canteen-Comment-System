@@ -1,12 +1,12 @@
 package com.uml_review.uml.Comment.Controller;
 
-import com.uml_review.uml.Annotation.PassToken;
-import com.uml_review.uml.Annotation.UserLoginToken;
+import com.auth0.jwt.JWT;
+import com.uml_review.uml.Like.Mapper.LikeMapper;
+import com.uml_review.uml.Utils.Annotation.UserLoginToken;
 import com.uml_review.uml.Comment.Entity.Comment;
 import com.uml_review.uml.Comment.Entity.TComment;
 import com.uml_review.uml.Comment.Mapper.CommentMapper;
 import com.uml_review.uml.Utils.ResultUtil;
-import org.omg.PortableInterceptor.INACTIVE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,6 +25,8 @@ public class CommentController {
     @Autowired
     CommentMapper commentMapper;
 
+    @Autowired
+    LikeMapper likeMapper;
     Map<String,Object> data = new HashMap<>();
 
     @UserLoginToken
@@ -78,6 +80,11 @@ public class CommentController {
             @RequestParam Integer statusId,
             HttpServletRequest request
     )throws Exception{
+        String token = request.getHeader("token");
+        String userId= JWT.decode(token).getAudience().get(0);
+        List<Integer> a = likeMapper.query_like(Integer.parseInt(userId),2);
+
+
         data.clear();
         List<TComment>result = null;
         if(statusId == null){
@@ -88,6 +95,18 @@ public class CommentController {
         if(result == null){
             return ResultUtil.error(500,"未知错误");
         }else{
+            Integer ios=0;
+            for(TComment i:result){
+                ios=1;
+                for(Integer z:a){
+                    if(i.getCommentId().equals(z)){
+                        i.setLike_me(1);
+                        ios=0;
+                        break;
+                    }
+                }
+                if(ios == 1) i.setLike_me(0);
+            }
             return ResultUtil.success(result);
         }
 
@@ -97,6 +116,18 @@ public class CommentController {
             if(result == null){
                 return ResultUtil.error(500,"未知错误");
             }else{
+                Integer flag=0;
+                for(TComment i:result){
+                    flag=1;
+                    for(Integer z:a){
+                        if(i.getCommentId().equals(z)){
+                            i.setLike_me(1);
+                            flag=0;
+                            break;
+                        }
+                    }
+                    if(flag == 1) i.setLike_me(0);
+                }
                 return ResultUtil.success(result);
             }
 

@@ -1,4 +1,4 @@
-package com.uml_review.uml.Core;
+package com.uml_review.uml.Utils.Core;
 
 import lombok.Data;
 

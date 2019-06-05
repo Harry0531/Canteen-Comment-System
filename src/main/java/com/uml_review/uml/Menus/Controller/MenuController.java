@@ -1,7 +1,8 @@
 package com.uml_review.uml.Menus.Controller;
 
-import com.uml_review.uml.Annotation.PassToken;
-import com.uml_review.uml.Annotation.UserLoginToken;
+import com.auth0.jwt.JWT;
+import com.uml_review.uml.Like.Mapper.LikeMapper;
+import com.uml_review.uml.Utils.Annotation.UserLoginToken;
 import com.uml_review.uml.Menus.Entity.Dish;
 import com.uml_review.uml.Menus.Entity.Str;
 import com.uml_review.uml.Menus.Mapper.MenuMapper;
@@ -23,6 +24,9 @@ public class MenuController {
 
     @Autowired
     MenuMapper menuMapper;
+
+    @Autowired
+    LikeMapper likeMapper;
 
     Map<String,Object> data = new HashMap<>();
 
@@ -100,12 +104,29 @@ public class MenuController {
             @RequestParam(value="keywords") String keywords,
             HttpServletRequest request
     )throws  Exception{
+        String token = request.getHeader("token");
+        String userId= JWT.decode(token).getAudience().get(0);
+
+        List<Integer> a = likeMapper.query_like(Integer.parseInt(userId),1);
+
         Str s = new Str();
         s.setWords("%"+keywords+"%");
         List<Dish>dishes = menuMapper.query(s);
         if(dishes == null ){
             return ResultUtil.error(500,"未知错误");
         }else {
+            Integer flag=0;
+            for(Dish i:dishes){
+                flag=1;
+                for(Integer j:a){
+                    if(i.getDishId().equals(j)){
+                        i.setLike_me(1);
+                        flag=0;
+                        break;
+                    }
+                }
+                if(flag == 1) i.setLike_me(0);
+            }
             return ResultUtil.success(dishes);
         }
     }

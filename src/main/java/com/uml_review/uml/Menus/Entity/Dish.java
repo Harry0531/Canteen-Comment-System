@@ -13,10 +13,15 @@ public class Dish {
     Double level;
     Double price;
 
+
     String loc_Canteen;
     String loc_Floor;
     String loc_Window;
 
     String discription;
 
+    Integer likes;
+    Integer comments;
+
+    Integer like_me;
 }
