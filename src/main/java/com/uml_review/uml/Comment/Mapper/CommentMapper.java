@@ -31,13 +31,13 @@ public interface CommentMapper {
             "\t\t`dish_id`as \"dishId\",\n" +
             "\t\t`user_id`as \"userId\",\n" +
             "\t\t`level`,`content`,`photo`,`likes`,`time` \n" +
-            "\t\tfrom comments where user_id=#{param1} order by `level` desc")
+            "\t\tfrom comments where user_id=#{param1} order by `likes` desc limit 20")
     List<TComment> query_User(Integer userId);
 
     @Select("select `comment_id`as\"commentId\",\n" +
             "\t\t`dish_id`as \"dishId\",\n" +
             "\t\t`user_id`as \"userId\",\n" +
             "\t\t`level`,`content`,`photo`,`likes`,`time` \n" +
-            "\t\tfrom comments where dish_id=#{param1} order by `level` desc")
+            "\t\tfrom comments where dish_id=#{param1} order by `likes` desc limit 20")
     List<TComment> query_Dish(Integer dishId);
 }

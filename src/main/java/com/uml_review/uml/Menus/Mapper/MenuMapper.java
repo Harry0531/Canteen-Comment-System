@@ -6,7 +6,9 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.joda.time.DateTime;
 
+import java.sql.Date;
 import java.util.List;
 
 @Mapper
@@ -42,9 +44,17 @@ public interface MenuMapper {
             "\t\t`name`,`avatar`,`discription`,`price`,`level`,`likes`,`comments`,\n" +
             "\t\t`loc_canteen`as \"loc_Canteen\",\n" +
             "\t\t`loc_floor`as \"loc_Floor\",\n" +
-            "\t\t`loc_window`as \"loc_Window\"  FROM menu WHERE `name` like \"${words}\" order by `level`desc")
+            "\t\t`loc_window`as \"loc_Window\"  FROM menu WHERE `name` like \"${words}\" order by `likes`desc limit 20")
     List<Dish> query(Str str);
 
     @Delete("delete from menu where `dish_id`=#{param1}")
     Integer dish_delete(Integer dishId);
+
+    @Select("SELECT  `dish_id`as \"dishId\",\n" +
+            "\t\t\t`name`,`avatar`,`discription`,`price`,`level`,`likes`,`comments`,\n" +
+            "\t\t\t`loc_canteen` as \"loc_Canteen\",\n" +
+            "\t\t\t`loc_floor` as \"loc_Floor\",\n" +
+            "\t\t\t`loc_window`as \"loc_Window\"\n" +
+            " from menu inner join (select `type_id`,COUNT( like_id ) FROM likee WHERE time > #{param1} and `type`=1 group by `type_id` order by COUNT(`like_id`) desc)b where menu.dish_id =b.type_id limit 20;")
+    List<Dish> recommand(String now);
 }

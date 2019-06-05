@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,6 +66,18 @@ public class MenuController {
         if(dish==null) {
             return ResultUtil.error(500,"未知错误");
         }else{
+            String token = request.getHeader("token");
+            String userId= JWT.decode(token).getAudience().get(0);
+            dish.setLike_me(0);
+            List<Integer> a= likeMapper.query_like(Integer.parseInt(userId),1);
+
+            for(int i:a){
+                if(i == Integer.parseInt(userId)){
+                    dish.setLike_me(1);
+                    break;
+                }
+            }
+
             return ResultUtil.success(dish);
         }
     }
@@ -105,9 +119,6 @@ public class MenuController {
             HttpServletRequest request
     )throws  Exception{
         String token = request.getHeader("token");
-        String userId= JWT.decode(token).getAudience().get(0);
-
-        List<Integer> a = likeMapper.query_like(Integer.parseInt(userId),1);
 
         Str s = new Str();
         s.setWords("%"+keywords+"%");
@@ -115,18 +126,7 @@ public class MenuController {
         if(dishes == null ){
             return ResultUtil.error(500,"未知错误");
         }else {
-            Integer flag=0;
-            for(Dish i:dishes){
-                flag=1;
-                for(Integer j:a){
-                    if(i.getDishId().equals(j)){
-                        i.setLike_me(1);
-                        flag=0;
-                        break;
-                    }
-                }
-                if(flag == 1) i.setLike_me(0);
-            }
+            dishes = dish_convert(dishes,token,1);
             return ResultUtil.success(dishes);
         }
     }
@@ -146,4 +146,45 @@ public class MenuController {
                 return ResultUtil.success(data);
             }
         }
+
+
+    @UserLoginToken
+    @RequestMapping("recommand")
+    public  Object dish_recommand(
+            HttpServletRequest request
+    )throws Exception{
+        data.clear();
+        String token = request.getHeader("token");
+
+        long currentTime = System.currentTimeMillis() - 24 * 60 * 60 * 1000;
+        Date date = new Date(currentTime);
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        List<Dish> ans= menuMapper.recommand(df.format(date));
+
+        ans = dish_convert(ans,token,1);
+        if(ans == null) return ResultUtil.error(500,"未知错误");
+        else return ResultUtil.success(ans);
+    }
+
+
+    public List<Dish> dish_convert(List<Dish>old,String token,Integer type){
+
+        String userId= JWT.decode(token).getAudience().get(0);
+        List<Integer> b = likeMapper.query_like(Integer.parseInt(userId),type);
+
+        Integer ios=0;
+        for(Dish i:old){
+            ios=1;
+            for(Integer j:b){
+                if(i.getDishId().equals(j)){
+                    i.setLike_me(1);
+                    ios=0;
+                    break;
+                }
+            }
+            if(ios == 1) i.setLike_me(0);
+        }
+        return  old;
+    }
 }
