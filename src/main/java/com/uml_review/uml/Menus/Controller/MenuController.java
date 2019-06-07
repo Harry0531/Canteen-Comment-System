@@ -8,9 +8,7 @@ import com.uml_review.uml.Menus.Entity.Str;
 import com.uml_review.uml.Menus.Mapper.MenuMapper;
 import com.uml_review.uml.Utils.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -20,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@CrossOrigin
 @RestController
 @RequestMapping("menu")
 public class MenuController {
@@ -113,7 +112,7 @@ public class MenuController {
     }
 
     @UserLoginToken
-    @RequestMapping("query")
+    @RequestMapping(path="query",method = RequestMethod.POST )
     public Object dish_query(
             @RequestParam(value="keywords") String keywords,
             HttpServletRequest request

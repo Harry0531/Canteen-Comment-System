@@ -2,6 +2,7 @@ package com.uml_review.uml.Upload.Controller;
 
 import com.uml_review.uml.Utils.IdUtils;
 import com.uml_review.uml.Utils.ResultUtil;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,7 +13,7 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-
+@CrossOrigin
 @RestController
 @RequestMapping("upload")
 public class UploadController {
