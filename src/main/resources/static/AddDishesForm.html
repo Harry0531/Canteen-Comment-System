@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>添加菜品</title>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<body>
+<div id="app">
+    <!--菜品名称-->
+    <el-input placeholder="请输入菜品名称" suffix-icon="el-icon-dish" v-model="dish_name"></el-input>
+
+    <!--菜品图片-->
+    <el-upload
+            class="upload-demo"
+            drag
+            action="http://120.79.204.39:8444/upload/icon"
+            multiple
+            :on-success="AddPhotoSuccess">
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+    </el-upload>
+
+    <!--菜品评分-->
+    <el-rate v-model="dish_value" show-text></el-rate>
+
+    <!--菜品价格-->
+    <el-input placeholder="请填写价格" suffix-icon="el-icon-money" v-model="dish_price"  type="number"></el-input>
+
+    <!--食堂地点-->
+    <template>
+        <el-select v-model="dish_canteen" filterable placeholder="请选择食堂地点">
+            <el-option
+                    v-for="item in Canteen_options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.label">
+            </el-option>
+        </el-select>
+    </template>
+    <el-input placeholder="请填写菜品楼层" suffix-icon="el-icon-office-building" v-model="dish_floor" type="number"></el-input>
+    <el-input placeholder="请填写菜品窗口" suffix-icon="el-icon-location-outline" v-model="dish_window" type="number"></el-input>
+
+    <!--菜品描述-->
+    <el-input placeholder="请输入菜品描述" suffix-icon="el-icon-chat-dot-round" v-model="dish_discription"></el-input>
+
+    <!--提交信息-->
+    <el-button type="primary" plain @click="AddDish">提交菜品信息</el-button>
+
+</div>
+</body>
+<script>
+    let app = new Vue({
+        el: '#app',
+        data: {
+            Canteen_options: [
+                {
+                    value: '选项1',
+                    label: '良乡-北食堂'
+                },
+                {
+                    value: '选项2',
+                    label: '良乡-清真食堂'
+                },
+                {
+                    value: '选项3',
+                    label: '良乡-南食堂'
+                },
+                {
+                    value: '选项4',
+                    label: '良乡-学生服务中心'
+                },
+                {
+
+                    value: '选项5',
+                    label: '良乡-中食堂'
+                }
+            ],
+            value: '',
+            dish_name: '',
+            // 照片
+            dish_photo_name: '',
+            //
+            dish_value: null,
+            dish_price: null,
+            dish_canteen: '',
+            dish_floor: '',
+            dish_window: '',
+            dish_discription: '',
+        },
+        mounted: function () {
+            //this.()
+        },
+        methods: {
+            AddPhotoSuccess: function (response) {
+                //function(response, file, fileList)
+                console.log(response);
+                this.dish_photo_name = response.data.filename
+            },
+            AddDish: function () {
+                let Name = this.dish_name
+                let Avator = this.dish_photo_name
+                let Level = this.dish_value
+                let Price = this.dish_price
+                let Loc_Canteen = this.dish_canteen
+                let Loc_Floor = this.dish_floor
+                let Loc_Window = this.dish_window
+                let Discription = this.dish_discription
+                console.log("Name = " + Name);
+                console.log(Loc_Canteen)
+                console.log("Avator = " + Avator);
+                console.log("Level = " + Level);
+                $.ajax({
+                    type: 'POST',
+                    url: 'http://120.79.204.39:8444/login/verification_username',
+                    data: {
+                        name: Name,
+                        avator: Avator,
+                        level: Level,
+                        price: Price,
+                        loc_Canteen: Loc_Canteen,
+                        loc_Floor: Loc_Floor,
+                        loc_window: Loc_Window,
+                        discription: Discription,
+                    },
+                    success: (res) => {
+                        console.log("菜品ID为 ： " + res.data.dish_id)
+                        let url='http://localhost:8444/index.html'
+                        window.open(url)
+                    },
+                    fail: (res) => {
+                        console.log(res)
+                        console.log("fail")
+                        this.buttonDisabled = true;
+                    }
+                })
+            },
+        }
+    })
+</script>
+</html>

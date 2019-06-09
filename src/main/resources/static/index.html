@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Index</title>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+    }
+</style>
+<body>
+<div id="app">
+    <div id="search-dishes">
+        <el-input v-model="dishes_keywords_input" placeholder="请输入你要查询菜品的关键字"></el-input>
+        <el-button icon="el-icon-search" circle @click="SearchDishesByKeywords"></el-button>
+        <el-dropdown trigger="click" @command="handleCommand">
+            <span class="el-dropdown-link">查询结果<i class="el-icon-arrow-down el-icon--right"></i></span>
+            <el-dropdown-menu slot="dropdown" >
+                <el-dropdown-item v-for="dish in dishes_search_array" :command="dish">
+                    {{dish.name}},{{dish.loc_Canteen}}
+                </el-dropdown-item>
+            </el-dropdown-menu>
+        </el-dropdown>
+    </div>
+
+
+</div>
+</body>
+<script>
+    function setCookie(cname, cvalue, exdays) {
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+        var expires = "expires=" + d.toGMTString();
+        document.cookie = cname + "=" + cvalue + "; " + expires;
+    }
+
+    function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i].trim();
+            if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+        }
+        return "";
+    }
+
+    let app = new Vue({
+        el: '#app',
+        data: {
+            dishes_keywords_input: '',
+            dishes_search_array:[],
+            dishes_recommand_array:[],
+        },
+        mounted: function () {
+            this.RecommandDishes()
+        },
+        methods: {
+            handleCommand:function(command) {//用于进入菜品详情
+                let url = 'http://localhost:8444/DishesCommend.html'+'?id='+command.dishId;
+                window.open(url);
+            },
+            SearchDishesByKeywords: function () {
+                let DishesKeywords = this.dishes_keywords_input
+                let token_in_Cookie = getCookie("token")
+                console.log("getCookie : " + getCookie("token"))
+                $.ajax({
+                    type: 'POST',
+                    url: '/menu/query',
+                    headers: {
+                        token: token_in_Cookie
+                    },
+                    data: {
+                        keywords: DishesKeywords
+                    },
+                    success: (res) => {
+                        console.log(res)
+                        this.dishes_search_array=res.data;
+                        console.log(this.dishes_search_array)
+
+                    },
+                    fail: (res) => {
+                        console.log(res)
+                    }
+                })
+            },
+            RecommandDishes:function () {
+                console.log("work?")
+                let token_in_Cookie = getCookie("token")
+                //console.log("getCookie : " + getCookie("token"))
+                $.ajax({
+                    type: 'POST',
+                    url: '/menu/recommand',
+                    headers: {
+                        token: token_in_Cookie
+                    },
+                    data: {},
+                    success: (res) => {
+                        console.log("****菜品推荐结果*****")
+                        console.log(res)
+                        console.log("****菜品推荐结果*****")
+                        this.dishes_recommand_array=res.data
+                    },
+                    fail: (res) => {
+                        console.log(res)
+                    }
+                })
+            },
+        }
+    })
+</script>
+</html>

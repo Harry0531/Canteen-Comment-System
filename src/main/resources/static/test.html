@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>test</title>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<body>
+<div id="app">
+    <i :class="star_type" @click="change_type"></i>
+</div>
+</body>
+<script>
+    let app = new Vue({
+        el: '#app',
+        data: {
+            star_type:"el-icon-star-off",
+        },
+        methods:{
+            change_type:function () {
+                if(app.star_type==="el-icon-star-on"){
+                    app.star_type="el-icon-star-off"
+                }
+                else{
+                    app.star_type="el-icon-star-on"
+                }
+            }
+        }
+    })
+</script>
+</html>

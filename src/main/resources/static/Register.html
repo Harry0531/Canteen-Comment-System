@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Register</title>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+    }
+
+    #app {
+
+        margin: 0 auto;
+        width: 450px;
+    }
+
+    #id_user-register-button {
+        margin: 0 auto;
+        width: 450px;
+    }
+
+    #mail-verification-code {
+        /*float:left;*/
+    }
+
+    #id_mail-verification-code {
+    }
+
+    #id_mail-button {
+        background-color: deepskyblue;
+    }
+</style>
+<body>
+<div id="app">
+    <!--用户名及查重认证-->
+    <div id="user-name-label">
+        <el-input v-model="username_input" placeholder="请输入用户名" @blur="QueryUsername"></el-input>
+        <p id="user-name-error"></p>
+    </div>
+    <!--密码及二次验证-->
+    <div id="password-label">
+        <el-input placeholder="请输入密码" v-model="password_input" show-password></el-input>
+        <el-input placeholder="请再次输入密码" v-model="password_check" show-password @blur="checkPassword"></el-input>
+        <p id="password-check-error"></p>
+    </div>
+    <!--邮箱及查重认证-->
+    <div id="user-mail-label">
+        <el-input v-model="email_input" placeholder="请输入你的邮箱" @blur="QueryMail"></el-input>
+        <p id="user-email-error"></p>
+    </div>
+    <!--邮箱验证码发送及认证-->
+    <div id="mail-verification-code">
+        <el-input id="id_mail-verification-code" v-model="vercode_input" placeholder="请输入验证码" @blur="checkVerCode">
+            <el-button slot="append" id="id_mail-button" @click="SendVerCode" style="color:white">发送验证码</el-button>
+        </el-input>
+        <p id="email-vercode-error"></p>
+    </div>
+    <!--注册按钮-->
+    <div id="user-register">
+        <el-button id="id_user-register-button" type="success" @click="userRegister" id="user-register-button"
+                   :disabled="buttonDisabled">注册
+        </el-button>
+    </div>
+</div>
+</body>
+<script>
+    let app = new Vue({
+        el: '#app',
+        data: {
+            username_input: '',
+
+            password_input: '',
+            password_check: '',
+
+            email_input: '',
+
+            vercode_input: '',
+            vercode_send: '',
+
+            user_id: '',
+
+            username_is_checked: false,
+            password_is_checked: false,
+            email_is_checked: false,
+            vercode_is_checked: false,
+
+            buttonDisabled: true,
+        },
+        mounted: function () {
+            //this.()
+        },
+        methods: {
+            QueryUsername: function () {
+                let Username = this.username_input
+                $.ajax({
+                    type: 'POST',
+                    url: '/login/verification_username',
+                    data: {
+                        username: Username
+                    },
+                    success: (res) => {
+                        //console.log(res)
+                        //console.log(res.data.status.toString())
+                        let UsernameError = document.getElementById("user-name-error")
+                        if (res.data.status === "已存在") {
+                            //console.log("no way");
+                            //console.log(UsernameError.innerText)
+                            if (Username != "") {
+                                UsernameError.innerText = "该用户名已被注册"
+                            }
+                            this.username_is_checked = false;
+                            this.RegisterAble();
+                        }
+                        else {
+                            //console.log("ok");
+                            UsernameError.innerText = ""
+                            this.username_is_checked = true;
+                            this.RegisterAble();
+                        }
+                    },
+                    fail: (res) => {
+                        console.log(res)
+                        console.log("fail")
+                        this.buttonDisabled = true;
+                    }
+                })
+            },
+            checkPassword: function () {
+                let password1 = this.password_input
+                let password2 = this.password_check
+                let password_error = document.getElementById("password-check-error")
+                //console.log("password1 : " + password1.toString())
+                //console.log("password2 : " + password2.toString())
+                if (password1 != password2) {
+                    this.password_is_checked = false;
+                    this.RegisterAble();
+                    if (password1 != "" && password2 != "") {
+                        password_error.innerText = "两次输入的密码不一致"
+                    }
+                }
+                else {
+                    if (password1 != "" && password2 != "") {
+                        this.password_is_checked = true;
+                    }
+                    this.RegisterAble();
+                    password_error.innerText = ""
+                }
+            },
+            QueryMail: function () {
+                let Mail = this.email_input
+                console.log(Mail.toString())
+                $.ajax({
+                    type: 'POST',
+                    url: '/login/verification_username',
+                    data: {
+                        username: Mail
+                    },
+                    success: (res) => {
+                        //console.log(res)
+                        //console.log(res.data.status.toString())
+                        let MailError = document.getElementById("user-email-error")
+                        if (res.data.status.toString() == "已存在") {
+                            if (Mail != "") {
+                                MailError.innerText = "该邮箱已被注册"
+                            }
+                            this.email_is_checked = false;
+                            this.RegisterAble();
+                        }
+                        else {
+                            MailError.innerText = ""
+                            this.email_is_checked = true;
+                            this.RegisterAble();
+                        }
+                    },
+                    fail: (res) => {
+                        console.log(res)
+                        console.log("fail")
+                    }
+                })
+            },
+            SendVerCode: function () {
+                let mail = this.email_input
+                $.ajax({
+                    type: 'POST',
+                    url: '/login/verification_code',
+                    data: {
+                        email: mail.toString()
+                    },
+                    success: (res) => {
+                        //console.log(res)
+                        //console.log(this.vercode_send)
+                        this.vercode_send = res.data.code
+                        console.log("用户的验证码为 : " + res.data.code)
+                    },
+                    fail: (res) => {
+                        console.log(res)
+                        console.log("fail")
+                    }
+                })
+            },
+            checkVerCode: function () {
+                let inputCode = this.vercode_input;
+                let sendCode = this.vercode_send;
+                let VercodeError = document.getElementById("email-vercode-error")
+                //console.log("发送的验证码为" + sendCode)
+                //console.log("输入的验证码为" + inputCode)
+                if (inputCode != sendCode) {
+                    if (inputCode != "") {
+                        VercodeError.innerText = "验证码不正确"
+                    }
+                    this.vercode_is_checked = false;
+                    this.RegisterAble();
+                }
+                else {
+                    VercodeError.innerText = ""
+                    if (inputCode != "" && sendCode != "") {
+                        this.vercode_is_checked = true;
+                    }
+                    this.RegisterAble();
+                }
+            },
+            userRegister: function () {
+                let Username = this.username_input
+                let Password = this.password_input
+                let eMail = this.email_input
+                $.ajax({
+                    type: 'POST',
+                    url: '/login/register',
+                    data: {
+                        username: Username,
+                        password: Password,
+                        email: eMail
+                    },
+                    success: (res) => {
+                        //console.log(res)
+                        console.log("your id is : " + res)
+                        alert("注册成功，自动跳转到登陆页面")
+                        let url='http://localhost:8444/Login.html'
+                        window.open(url)
+                    },
+                    fail: (res) => {
+                        console.log(res)
+                        console.log("fail")
+                    }
+                })
+            },
+            RegisterAble: function () {
+                this.buttonDisabled = !(this.username_is_checked && this.password_is_checked && this.email_is_checked && this.vercode_is_checked);
+                console.log("****************************")
+                console.log("username " + this.username_is_checked)
+                console.log("password " + this.password_is_checked)
+                console.log("email " + this.email_is_checked)
+                console.log("vercode " + this.vercode_is_checked)
+                console.log("Register " + this.buttonDisabled)
+                console.log("****************************")
+            }
+        }
+    })
+</script>
+</html>
