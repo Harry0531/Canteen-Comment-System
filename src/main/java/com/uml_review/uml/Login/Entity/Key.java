@@ -6,4 +6,5 @@ import lombok.Data;
 public class Key {
     Integer userId;
     String password;
+    Integer firstLogin;
 }

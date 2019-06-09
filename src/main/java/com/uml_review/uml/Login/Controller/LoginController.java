@@ -108,6 +108,11 @@ public class LoginController {
             data.put("token",token);
             data.put("result","登录成功");
             data.put("user_id",key.getUserId());
+            data.put("firstLogin?",key.getFirstLogin());
+
+            if(key.getFirstLogin() == 1){
+                loginMapper.update_first(key.getUserId());
+            }
             return ResultUtil.success(data);
         }else{
             data.put("result","账号或密码错误");
