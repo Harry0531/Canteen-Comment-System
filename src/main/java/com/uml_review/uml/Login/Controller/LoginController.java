@@ -77,6 +77,7 @@ public class LoginController {
         Integer n =loginMapper.register(param);
         if(n == 0) return ResultUtil.error(500,"注册失败");
         else {
+            loginMapper.add_info(n,param.getUsername());
             data.put("status","注册成功");
             data.put("user_id",n);
             return ResultUtil.success(data);
