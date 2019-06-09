@@ -88,7 +88,7 @@
                 let PhotoName=app.dish_photo_name
                 $.ajax({
                     type: 'POST',
-                    url: '/comment/',
+                    url: '/comment/add',
                     headers: {
                         token: token_in_Cookie
                     },
@@ -101,7 +101,7 @@
                     },
                     success: function (res) {
                         console.log(res)
-                        let url='http://localhost:8444/AddDishesCommend.html' + '?id='+GetRequest()
+                        let url='http://localhost:8444/DishesCommend.html' + '?id='+GetRequest()
                         window.open(url)
                     },
                     fail: function (res) {

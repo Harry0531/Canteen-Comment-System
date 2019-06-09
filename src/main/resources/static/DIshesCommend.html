@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:url="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8">
     <title>DishesCommand</title>
@@ -46,6 +46,50 @@
         <p id="dish_likes">点赞数量</p>
 
         <el-button type="primary" icon="el-icon-edit" circle @click="AddDishCommend"></el-button>
+
+
+        <template>
+            <el-table
+                    :data="dish_comment_list"
+                    border
+                    style="width: 100%">
+                <el-table-column
+                        prop="commentId"
+                        label="评论id"
+                        width="180">
+                </el-table-column>
+                <el-table-column
+                        prop="userId"
+                        label="用户id"
+                        width="180">
+                </el-table-column>
+                <el-table-column
+                        prop="time"
+                        label="日期"
+                        width="180">
+                </el-table-column>
+                <el-table-column
+                        prop="content"
+                        label="评论内容">
+                </el-table-column>
+                <el-table-column
+                        prop="level"
+                        label="星级评价"
+                        @cell-click="CommendisLike"
+                        width="180">
+                </el-table-column>
+                <el-table-column
+                        prop="photo"
+                        label="评论图片">
+                </el-table-column>
+                <!--<el-table-column-->
+                        <!--label="点赞该评论"-->
+                        <!--@cell-click="CommendisLike"-->
+                        <!--width="180">-->
+                <!--</el-table-column>-->
+            </el-table>
+        </template>
+
     </div>
 </div>
 </body>
@@ -80,12 +124,13 @@
     let app = new Vue({
         el: '#app',
         data: {
-            dish_comment: [],
             value: 3.7,
             star_type: "el-icon-star-off",
+            dish_comment_list: [],
         },
         mounted: function () {
             this.getDishData()
+            this.getDishComment()
         },
         methods: {
             getDishData: function () {
@@ -141,8 +186,8 @@
                 console.log("getCookie : " + getCookie("token"))
                 let dish_id = GetRequest();
                 $.ajax({
-                    type: 'GET',
-                    url: '/menu/info',
+                    type: 'POST',
+                    url: '/comment/query',
                     headers: {
                         token: token_in_Cookie
                     },
@@ -151,9 +196,8 @@
                         statusId: dish_id
                     },
                     success: function (res) {
-                        console.log(res)
-                        this.dish_comment = res
-
+                        console.log(res.data)
+                        app.dish_comment_list = res.data
                     },
                     fail: function (res) {
                         console.log(res);
@@ -227,6 +271,9 @@
             AddDishCommend:function () {
                 let url='http://localhost:8444/AddDishesCommend.html' + '?id='+GetRequest()
                 window.open(url)
+            },
+            CommendisLike:function () {
+                alert("666")
             }
         }
     })
