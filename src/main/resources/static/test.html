@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:url="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8">
     <title>test</title>
@@ -10,23 +10,93 @@
 </head>
 <body>
 <div id="app">
-    <i :class="star_type" @click="change_type"></i>
+    <template>
+        <el-carousel trigger="click" height="300px" :interval="5000" arrow="always">
+            <el-carousel-item v-for="(img,index) in imgList" :key="index">
+                <!--<img :src="img.url">-->
+                <p>{{img.url}}</p>
+            </el-carousel-item>
+        </el-carousel>
+    </template>
+    <!--<template>-->
+    <!--<el-carousel indicator-position="outside">-->
+    <!--<el-carousel-item v-for="item in 4" :key="item">-->
+    <!--<h3>{{ item }}</h3>-->
+    <!--</el-carousel-item>-->
+    <!--</el-carousel>-->
+    <!--</template>-->
 </div>
 </body>
 <script>
+    function setCookie(cname, cvalue, exdays) {
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+        var expires = "expires=" + d.toGMTString();
+        document.cookie = cname + "=" + cvalue + "; " + expires;
+    }
+
+    function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i].trim();
+            if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+        }
+        return "";
+    }
+
     let app = new Vue({
         el: '#app',
+
         data: {
-            star_type:"el-icon-star-off",
+            imgList: [
+                {
+                    url: 'http://120.79.204.39:8888/icon/1560048086431155840bc6858a604354bc55a0ce9c576844hsly.jpg'
+                }
+            ],
         },
-        methods:{
-            change_type:function () {
-                if(app.star_type==="el-icon-star-on"){
-                    app.star_type="el-icon-star-off"
-                }
-                else{
-                    app.star_type="el-icon-star-on"
-                }
+        mounted: function () {
+            this.GetAllPictUrl()
+        },
+        methods: {
+            GetPictureUrl: function (dish_id) {
+                let token_in_Cookie = getCookie("token")
+                console.log("getCookie : " + getCookie("token"))
+                $.ajax({
+                    type: 'GET',
+                    url: '/menu/info',
+                    headers: {
+                        token: token_in_Cookie
+                    },
+                    data: {
+                        dishId: dish_id
+                    },
+                    success: (res) => {
+                        console.log(res)
+                        let url = "http://120.79.204.39:8888/icon/" + res.data.avatar
+                        return url
+                    },
+                    fail: (res) => {
+                        console.log(res)
+                    }
+                })
+            },
+
+            GetAllPictUrl: function () {
+                // app.imgList.push({url:app.GetPictureUrl(1)})
+                // app.imgList.push({url:app.GetPictureUrl(2)})
+                // app.imgList.push({url:app.GetPictureUrl(3)})
+                // app.imgList.push({url:app.GetPictureUrl(4)})
+                let that = this
+
+                console.log("this.GetPictureUrl(1) = " + this.GetPictureUrl(1))
+
+                console.log("that.GetPictureUrl(1) = " + that.GetPictureUrl(1))
+
+                this.imgList.push({url: this.GetPictureUrl(1)})
+                this.imgList.push({url: this.GetPictureUrl(2)})
+                this.imgList.push({url: this.GetPictureUrl(3)})
+                this.imgList.push({url: this.GetPictureUrl(4)})
             }
         }
     })
