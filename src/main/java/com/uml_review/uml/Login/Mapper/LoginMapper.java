@@ -18,6 +18,9 @@ public interface LoginMapper {
             "select last_insert_id() as aa;\n")
     Integer register(Login param);
 
+    @Insert("Insert into person (`user_id`,`nickname`)values(#{param1},#{param2})")
+    Integer add_info(Integer userId,String username);
+
     @Select("select `user_id` as \"userId\",`password` from user where `username`=#{param1} or `email`=#{param1};")
     Key login(String str);
 
