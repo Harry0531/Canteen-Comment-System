@@ -93,13 +93,13 @@ public class MenuController {
         }
         Dish old=menuMapper.info(dish.getDishId());
 
-        if(dish.getName() != null) old.setName(dish.getName());
-        if(dish.getAvatar() != null) old.setAvatar(dish.getAvatar());
-        if(dish.getDiscription() != null) old.setDiscription(dish.getDiscription());
+        if(dish.getName() != null &&!dish.getName().equals("")) old.setName(dish.getName());
+        if(dish.getAvatar() != null &&!dish.getAvatar().equals("")) old.setAvatar(dish.getAvatar());
+        if(dish.getDiscription() != null &&!dish.getDiscription().equals("")) old.setDiscription(dish.getDiscription());
         if(dish.getLevel() != null) old.setLevel(dish.getLevel());
-        if(dish.getLoc_Canteen() != null) old.setLoc_Canteen(dish.getLoc_Canteen());
-        if(dish.getLoc_Floor() != null) old.setLoc_Floor(dish.getLoc_Floor());
-        if(dish.getLoc_Window() != null) old.setLoc_Window(dish.getLoc_Window());
+        if(dish.getLoc_Canteen() != null &&!dish.getLoc_Canteen().equals("")) old.setLoc_Canteen(dish.getLoc_Canteen());
+        if(dish.getLoc_Floor() != null &&!dish.getLoc_Floor().equals("")) old.setLoc_Floor(dish.getLoc_Floor());
+        if(dish.getLoc_Window() != null && !dish.getLoc_Window().equals("") ) old.setLoc_Window(dish.getLoc_Window());
         if(dish.getPrice() != null) old.setPrice(dish.getPrice());
 
         Integer m=menuMapper.update(old);

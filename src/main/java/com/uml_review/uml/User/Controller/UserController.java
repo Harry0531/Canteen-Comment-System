@@ -58,9 +58,9 @@ public class UserController {
             HttpServletRequest request
     )throws  Exception{
         User user =userMapper.user_info(user_old.getUserId());
-        if(user_old.getNickname() != null) user.setNickname(user_old.getNickname());
-        if(user_old.getAvatar() != null) user.setAvatar(user_old.getAvatar());
-        if(user_old.getMotto() != null) user.setMotto(user_old.getMotto());
+        if(user_old.getNickname() != null && !user_old.getNickname().equals("")) user.setNickname(user_old.getNickname());
+        if(user_old.getAvatar() != null &&!user_old.getAvatar().equals("")) user.setAvatar(user_old.getAvatar());
+        if(user_old.getMotto() != null && !user_old.getMotto().equals("")) user.setMotto(user_old.getMotto());
         Integer m = null;
         m = userMapper.user_Update(user);
         if(m ==null ) return ResultUtil.error(500,"未知错误");
