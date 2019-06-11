@@ -2,7 +2,7 @@
 <html xmlns:url="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8">
-    <title>DishesComment</title>
+    <title>菜品详情</title>
     <script src="https://unpkg.com/vue/dist/vue.js"></script>
     <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
@@ -325,10 +325,10 @@
             openModifyUserInformation: function () {
                 let userid_in_Cookie = getCookie("user_id")
                 console.log("user_id : " + userid_in_Cookie)
-                if(userid_in_Cookie==""){
+                if (userid_in_Cookie == "") {
                     window.open('http://localhost:8444/Login.html')
                 }
-                else{
+                else {
                     window.open('http://localhost:8444/ModifyUserInformation.html')
                 }
             },
