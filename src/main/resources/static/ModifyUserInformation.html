@@ -22,7 +22,26 @@
     }
 
     #app {
-
+    }
+    #id_nc{
+        margin:0 auto;
+        width:450px;
+    }
+    #id_tx {
+        margin: 0 auto;
+        width: 370px;
+        margin-top: 20px;
+    }
+    #id_gxqm {
+        margin: 0 auto;
+        width: 520px;
+        margin-top: 20px;
+        height:150px;
+    }
+    #id_xgxx {
+        margin: 0 auto;
+        width: 350px;
+        margin-top: 20px;
     }
 </style>
 <body>
@@ -65,37 +84,43 @@
                 </el-input>
             </div>
         </el-menu-item>
-        <el-menu-item id="id_5" index="5" @click="openModifyUserInformation"><i class="el-icon-user"
-                                                                                style="display: inline-block;"></i>
+        <el-menu-item id="id_5" index="5" @click="openAddDishForm"><i class="el-icon-user"
+                                                                      style="display: inline-block;"></i>
             <p id="user_NickName" style="display: inline-block;">用户昵称</p></el-menu-item>
     </el-menu>
 </div>
 <!--页面主体-->
 <div id="app">
     <!--用户昵称-->
-    <el-input placeholder="请输入昵称" suffix-icon="el-icon-dish" v-model="user_nickname"></el-input>
+    <div id="id_nc">
+        <el-input placeholder="请输入昵称" suffix-icon="el-icon-dish" v-model="user_nickname"></el-input>
+    </div>
     <!--用户头像-->
-    <el-upload
-            class="upload-demo"
-            drag
-            action="http://120.79.204.39:8444/upload/icon"
-            multiple
-            :on-success="AddPhotoSuccess">
-        <i class="el-icon-upload"></i>
-        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-        <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
-    </el-upload>
+    <div id="id_tx">
+        <el-upload class="upload-demo"
+                   drag
+                   action="http://120.79.204.39:8444/upload/icon"
+                   multiple
+                   :on-success="AddPhotoSuccess">
+            <div id="id_tx_k">
+                <i class="el-icon-upload"></i>
+                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+            </div>
+            <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+        </el-upload>
+    </div>
     <!--用户昵称-->
-    <el-input
-            type="textarea"
-            placeholder="请输入你的个性签名"
-            v-model="user_motto"
-            maxlength="30"
-            show-word-limit
-    >
+    <el-input type="textarea"
+              id="id_gxqm"
+              placeholder="请输入你的个性签名"
+              v-model="user_motto"
+              maxlength="30"
+              show-word-limit>
     </el-input>
     <!--确定修改-->
-    <el-button type="primary" plain @click="ModifyInformation">修改信息</el-button>
+    <div id="id_xgxx">
+        <el-button type="primary" style="width:350px" @click="ModifyInformation">修改信息</el-button>
+    </div>
 </div>
 </div>
 </body>
@@ -187,14 +212,7 @@
 
             //打开修改个人信息页面
             openModifyUserInformation: function () {
-                let userid_in_Cookie = getCookie("user_id")
-                console.log("user_id : " + userid_in_Cookie)
-                if(userid_in_Cookie==""){
-                    window.open('http://localhost:8444/Login.html')
-                }
-                else{
-                    window.open('http://localhost:8444/ModifyUserInformation.html')
-                }
+                window.open('http://localhost:8444/ModifyUserInformation.html')
             },
         },
     })

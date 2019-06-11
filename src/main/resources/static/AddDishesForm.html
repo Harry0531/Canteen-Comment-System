@@ -10,6 +10,65 @@
     <link rel="stylesheet" href="css/NavigationBar.css"><!--导航栏 css-->
     <script src="js/Cookie_Parameter.js"></script><!--获取cookie和参数-->
 </head>
+<style>
+    #id_cpmc {
+        margin: 0 auto;
+        width: 450px;
+    }
+
+    #id_sck {
+        margin: 0 auto;
+        width: 370px;
+        margin-top: 20px;
+    }
+
+    #id_star {
+        margin: 0 auto;
+        width: 125px;
+        margin-top: 10px;
+    }
+
+    #id_jg {
+        margin: 0 auto;
+        width: 370px;
+        margin-top: 10px;
+    }
+
+    #id_dd {
+        margin: 0 auto;
+        width: 370px;
+        margin-top: 10px;
+    }
+
+    #id_lcck {
+        margin: 0 auto;
+        width: 370px;
+        margin-top: 10px;
+    }
+
+    #id_lcck_a {
+        display: inline;
+        width: 175px;
+    }
+
+    #id_lcck_b {
+        float: right;
+        width: 175px;
+        display: inline;
+    }
+
+    #id_cpms {
+        margin: 0 auto;
+        width: 450px;
+        margin-top: 15px;
+    }
+
+    #id_tjxx {
+        margin: 0 auto;
+        width: 250px;
+        margin-top: 15px;
+    }
+</style>
 <body>
 <!--导航栏部分-->
 <div id="navbar">
@@ -50,53 +109,66 @@
                 </el-input>
             </div>
         </el-menu-item>
-        <el-menu-item id="id_5" index="5" @click="openModifyUserInformation"><i class="el-icon-user"
-                                                                                style="display: inline-block;"></i>
+        <el-menu-item id="id_5" index="5" @click="openAddDishForm"><i class="el-icon-user"
+                                                                      style="display: inline-block;"></i>
             <p id="user_NickName" style="display: inline-block;">用户昵称</p></el-menu-item>
     </el-menu>
 </div>
-<!--页面主体-->
 <div id="app">
     <!--菜品名称-->
-    <el-input placeholder="请输入菜品名称" suffix-icon="el-icon-dish" v-model="dish_name"></el-input>
-
+    <div id="id_cpmc">
+        <el-input placeholder="请输入菜品名称" suffix-icon="el-icon-dish" v-model="dish_name"></el-input>
+    </div>
     <!--菜品图片-->
-    <el-upload
-            class="upload-demo"
-            drag
-            action="http://120.79.204.39:8444/upload/icon"
-            multiple
-            :on-success="AddPhotoSuccess">
-        <i class="el-icon-upload"></i>
-        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-        <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
-    </el-upload>
-
+    <div id="id_sck">
+        <el-upload class="upload-demo"
+                   drag
+                   action="http://120.79.204.39:8444/upload/icon"
+                   multiple
+                   :on-success="AddPhotoSuccess">
+            <i class="el-icon-upload"></i>
+            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+            <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+        </el-upload>
+    </div>
     <!--菜品评分-->
-    <el-rate v-model="dish_value" show-text></el-rate>
-
+    <div id="id_star">
+        <el-rate v-model="dish_value" show-text></el-rate>
+    </div>
     <!--菜品价格-->
-    <el-input placeholder="请填写价格" suffix-icon="el-icon-money" v-model="dish_price"  type="number"></el-input>
-
+    <div id="id_jg">
+        <el-input placeholder="请填写价格" suffix-icon="el-icon-money" v-model="dish_price" type="number"></el-input>
+    </div>
     <!--食堂地点-->
-    <template>
-        <el-select v-model="dish_canteen" filterable placeholder="请选择食堂地点">
-            <el-option
-                    v-for="item in Canteen_options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.label">
-            </el-option>
-        </el-select>
-    </template>
-    <el-input placeholder="请填写菜品楼层" suffix-icon="el-icon-office-building" v-model="dish_floor" type="number"></el-input>
-    <el-input placeholder="请填写菜品窗口" suffix-icon="el-icon-location-outline" v-model="dish_window" type="number"></el-input>
-
+    <div id="id_dd">
+        <template>
+            <el-select stv-model="dish_canteen" filterable placeholder="请选择食堂地点" style="width:370px">
+                <el-option v-for="item in Canteen_options"
+                           :key="item.value"
+                           :label="item.label"
+                           :value="item.label">
+                </el-option>
+            </el-select>
+        </template>
+    </div>
+    <div id="id_lcck">
+        <div id="id_lcck_a">
+            <el-input placeholder="请填写菜品楼层" suffix-icon="el-icon-office-building" v-model="dish_floor" type="number"
+                      style="width:175px"></el-input>
+        </div>
+        <div id="id_lcck_b">
+            <el-input placeholder="请填写菜品窗口" suffix-icon="el-icon-location-outline" v-model="dish_window" type="number"
+                      style="width:175px"></el-input>
+        </div>
+    </div>
     <!--菜品描述-->
-    <el-input placeholder="请输入菜品描述" suffix-icon="el-icon-chat-dot-round" v-model="dish_discription"></el-input>
-
+    <div id="id_cpms">
+        <el-input placeholder="请输入菜品描述" suffix-icon="el-icon-chat-dot-round" v-model="dish_discription"></el-input>
+    </div>
     <!--提交信息-->
-    <el-button type="primary" plain @click="AddDish">提交菜品信息</el-button>
+    <div id="id_tjxx">
+        <el-button type="primary" plain @click="AddDish" style="width:250px">提交菜品信息</el-button>
+    </div>
 
 </div>
 </body>
@@ -188,14 +260,7 @@
 
             //打开修改个人信息页面
             openModifyUserInformation: function () {
-                let userid_in_Cookie = getCookie("user_id")
-                console.log("user_id : " + userid_in_Cookie)
-                if(userid_in_Cookie==""){
-                    window.open('http://localhost:8444/Login.html')
-                }
-                else{
-                    window.open('http://localhost:8444/ModifyUserInformation.html')
-                }
+                window.open('http://localhost:8444/ModifyUserInformation.html')
             },
         },
     })
@@ -274,7 +339,7 @@
                     },
                     success: (res) => {
                         console.log("菜品ID为 ： " + res.data.dish_id)
-                        let url='http://localhost:8444/index.html'
+                        let url = 'http://localhost:8444/index.html'
                         window.open(url)
                     },
                     fail: (res) => {

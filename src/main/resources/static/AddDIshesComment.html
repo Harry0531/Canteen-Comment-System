@@ -99,21 +99,17 @@
             this.getUserNickName()
         },
         methods: {
-
             handleSelect(key, keyPath) {
                 console.log(key, keyPath);
             },
-
             //进入首页
             openIndex: function () {
                 window.open('http://localhost:8444/index.html')
             },
-
             //进入添加菜品页面
             openAddDishForm: function () {
                 window.open('http://localhost:8444/AddDishesForm.html')
             },
-
             //搜索栏
             SearchDishesByKeywords: function () {
                 let DishesKeywords = this.dishes_keywords_input
@@ -132,20 +128,17 @@
                         console.log(res)
                         this.dishes_search_array = res.data;
                         console.log(this.dishes_search_array)
-
                     },
                     fail: (res) => {
                         console.log(res)
                     }
                 })
             },
-
             //用于进入菜品详情
             handleCommand: function (command) {
                 let url = 'http://localhost:8444/DishesComment.html' + '?id=' + command.dishId;
                 window.open(url);
             },
-
             //获取用户昵称并显示
             getUserNickName: function () {
                 let token_in_Cookie = getCookie("token")
@@ -171,7 +164,6 @@
                     }
                 })
             },
-
             //打开修改个人信息页面
             openModifyUserInformation: function () {
                 let userid_in_Cookie = getCookie("user_id")
@@ -193,7 +185,6 @@
             dish_photo_name:'',
         },
         mounted:function () {
-
         },
         methods:{
             AddDishCommend:function () {

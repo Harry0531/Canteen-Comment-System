@@ -87,8 +87,8 @@
     <!--走马灯 轮播图部分-->
     <template>
         <el-carousel id="id_lunbo" trigger="click" height="440px" :interval="5000" arrow="always">
-            <el-carousel-item v-for="(img,index) in imgList" :key="index">
-                <img :src="img.url">
+            <el-carousel-item v-for="(img,index) in imgUrlList" :key="index">
+                <img :src="img.url" @click="toDish(index)">
             </el-carousel-item>
         </el-carousel>
     </template>
@@ -184,10 +184,10 @@
             openModifyUserInformation: function () {
                 let userid_in_Cookie = getCookie("user_id")
                 console.log("user_id : " + userid_in_Cookie)
-                if(userid_in_Cookie==""){
+                if (userid_in_Cookie == "") {
                     window.open('http://localhost:8444/Login.html')
                 }
-                else{
+                else {
                     window.open('http://localhost:8444/ModifyUserInformation.html')
                 }
             },
@@ -197,7 +197,7 @@
         el: '#app',
         data: {
             dishes_recommand_array: [],
-            imgList: [],
+            imgUrlList: [],
         },
         mounted: function () {
             this.GetAllDishPictUrl()
@@ -242,7 +242,10 @@
                     success: (res) => {
                         //console.log(res)
                         let uurl = "http://120.79.204.39:8888/icon/" + res.data.avatar
-                        this.imgList.push({url: uurl})
+                        let idd = res.data.dishId
+                        this.imgUrlList.push({url: uurl})
+                        //this.imgUrlList.push({id:idd})
+                        // this.imgUrlList.push({index:dish_id})
                     },
                     fail: (res) => {
                         console.log(res)
@@ -252,14 +255,17 @@
             },
 
             GetAllDishPictUrl: function () {
-                let that = this
-
-                //console.log("this")
                 this.GetDishPictureUrl(1)
                 this.GetDishPictureUrl(2)
                 this.GetDishPictureUrl(3)
                 this.GetDishPictureUrl(4)
             },
+
+            toDish: function (index) {
+                let dish_id = parseInt(index) + 1
+                let url = 'http://localhost:8444/DishesComment.html' + '?id=' + dish_id;
+                window.open(url);
+            }
         }
     })
 </script>

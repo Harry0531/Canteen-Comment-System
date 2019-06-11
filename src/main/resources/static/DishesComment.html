@@ -137,7 +137,7 @@
             <p id="dish_name" style="font-size:22px;font-weight:700">菜品名称</p>
         </div>
 
-        <!--菜品名称-->
+        <!--菜品照片-->
         <img :src="dish_photo" id="id_dish_picture"/>
 
         <!--打星的一行-->
@@ -177,6 +177,7 @@
             </div>
         </div>
 
+        <!--点赞菜品-->
         <dish class="id_info_h">
             <p id="e_dish_like">我要点赞</p>
             <i :class="star_type" @click="DishChangeLike"></i>
@@ -185,11 +186,13 @@
         <br/>
         <br/>
 
+        <!--撰写评论-->
         <dish class="id_info_h">
             <p id="e_dish_addcomment">我要写评论</p>
             <el-button type="primary" icon="el-icon-edit" circle @click="AddDishComment"></el-button>
         </dish>
 
+        <!--菜品评论-->
         <template>
             <el-table :data="dish_comment_list"
                       border
