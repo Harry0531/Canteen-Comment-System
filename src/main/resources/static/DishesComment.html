@@ -224,7 +224,7 @@
                 </el-table-column>
                 <el-table-column label="操作" min-width="10%">
                     <template scope="scope">
-                        <el-button type="warning" icon="el-icon-star-off" circle
+                        <el-button type="warning" :icon="comment_star_type" circle
                                    @click="handleLikeComment(scope.$index, scope.row)"></el-button>
                     </template>
                 </el-table-column>
@@ -341,6 +341,7 @@
             star_type: "el-icon-star-off",
             dish_comment_list: [],
             dish_photo: '',
+            comment_star_type:"el-icon-star-off",
         },
         mounted: function () {
             this.getDishData()
@@ -420,9 +421,10 @@
                             //改变评论图片的url
                             element.photo = 'http://120.79.204.39:8888/comment/' + element.photo
                             //改变用户id为用户的昵称
-                            console.log(element.userId)
-                            console.log(app.ChangeCommentUserNickname(element.userId))
-                            console.log(element.userId)
+                            app.ChangeCommentUserNickname(element.userId)
+                            //console.log(element.userId)
+                            //console.log()
+                            //console.log(element.userId)
                         })
                     },
                     fail: function (res) {
@@ -541,6 +543,7 @@
                     },
                     success: function (res) {
                         console.log(res)
+                        alert(res.msg)
                     },
                     fail: function (res) {
                         console.log(res);
