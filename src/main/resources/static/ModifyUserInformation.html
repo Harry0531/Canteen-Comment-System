@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:url="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8">
-    <title>Index</title>
+    <title>修改个人信息</title>
     <script src="https://unpkg.com/vue/dist/vue.js"></script>
     <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
@@ -11,7 +11,6 @@
     <script src="js/Cookie_Parameter.js"></script><!--获取cookie和参数-->
 </head>
 <style>
-
     * {
         box-sizing: border-box;
     }
@@ -22,19 +21,8 @@
         height: 100%;
     }
 
-    img {
-        width: 100%;
-        height: 100%;
-    }
-
     #app {
 
-    }
-
-    #id_lunbo {
-        width: 780px;
-        margin: 0 auto;
-        background-color: black;
     }
 </style>
 <body>
@@ -84,14 +72,31 @@
 </div>
 <!--页面主体-->
 <div id="app">
-    <!--走马灯 轮播图部分-->
-    <template>
-        <el-carousel id="id_lunbo" trigger="click" height="440px" :interval="5000" arrow="always">
-            <el-carousel-item v-for="(img,index) in imgList" :key="index">
-                <img :src="img.url">
-            </el-carousel-item>
-        </el-carousel>
-    </template>
+    <!--用户昵称-->
+    <el-input placeholder="请输入昵称" suffix-icon="el-icon-dish" v-model="user_nickname"></el-input>
+    <!--用户头像-->
+    <el-upload
+            class="upload-demo"
+            drag
+            action="http://120.79.204.39:8444/upload/icon"
+            multiple
+            :on-success="AddPhotoSuccess">
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+    </el-upload>
+    <!--用户昵称-->
+    <el-input
+            type="textarea"
+            placeholder="请输入你的个性签名"
+            v-model="user_motto"
+            maxlength="30"
+            show-word-limit
+    >
+    </el-input>
+    <!--确定修改-->
+    <el-button type="primary" plain @click="ModifyInformation">修改信息</el-button>
+</div>
 </div>
 </body>
 <script>
@@ -196,70 +201,50 @@
     let app = new Vue({
         el: '#app',
         data: {
-            dishes_recommand_array: [],
-            imgList: [],
+            user_nickname: '',
+            user_photo_name: '',
+            user_motto: '',
         },
         mounted: function () {
-            this.GetAllDishPictUrl()
+
         },
         methods: {
-
-            // RecommandDishes:function () {
-            //     console.log("work?")
-            //     let token_in_Cookie = getCookie("token")
-            //     //console.log("getCookie : " + getCookie("token"))
-            //     $.ajax({
-            //         type: 'POST',
-            //         url: '/menu/recommand',
-            //         headers: {
-            //             token: token_in_Cookie
-            //         },
-            //         data: {},
-            //         success: (res) => {
-            //             console.log("****菜品推荐结果*****")
-            //             console.log(res)
-            //             console.log("****菜品推荐结果*****")
-            //             this.dishes_recommand_array=res.data
-            //         },
-            //         fail: (res) => {
-            //             console.log(res)
-            //         }
-            //     })
-            // },
-
-            GetDishPictureUrl: function (dish_id) {
+            AddPhotoSuccess: function (response) {
+                //function(response, file, fileList)
+                console.log(response);
+                this.user_photo_name = response.data.filename
+            },
+            ModifyInformation: function () {
                 let token_in_Cookie = getCookie("token")
-                //console.log("getCookie : " + getCookie("token"))
+                //console.log("token : " + token_in_Cookie)
+                let userid_in_Cookie = getCookie("user_id")
+                //console.log("user_id : " + userid_in_Cookie)
+                let UserNickname = app.user_nickname
+                let photoname = app.user_photo_name
+                let UserMotto = app.user_motto
                 $.ajax({
-                    type: 'GET',
-                    url: '/menu/info',
+                    type: 'POST',
+                    url: "http://120.79.204.39:8444//user/update",
                     headers: {
                         token: token_in_Cookie
                     },
                     data: {
-                        dishId: dish_id
+                        userId: userid_in_Cookie,
+                        nickname: UserNickname,
+                        avatar: photoname,
+                        motto: UserMotto
                     },
                     success: (res) => {
-                        //console.log(res)
-                        let uurl = "http://120.79.204.39:8888/icon/" + res.data.avatar
-                        this.imgList.push({url: uurl})
+                        console.log(res)
+                        navbar.getUserNickName()
+                        alert("修改个人信息成功")
+                        window.open('http://localhost:8444/index.html')
                     },
                     fail: (res) => {
                         console.log(res)
-                        //return "fail"
                     }
                 })
-            },
-
-            GetAllDishPictUrl: function () {
-                let that = this
-
-                //console.log("this")
-                this.GetDishPictureUrl(1)
-                this.GetDishPictureUrl(2)
-                this.GetDishPictureUrl(3)
-                this.GetDishPictureUrl(4)
-            },
+            }
         }
     })
 </script>

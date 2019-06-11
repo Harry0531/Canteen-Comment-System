@@ -1,0 +1,22 @@
+/***导航栏部分***/
+#id_dishes_keywords_input {
+    width: 270px;
+    float: right;
+}
+
+#id_click {
+    width: 85px;
+    float: right;
+
+}
+
+#search-dishes {
+    margin-left: 135px;
+}
+
+#id_5 {
+    float: right;
+    /*display: inline-block;*/
+}
+
+/***导航栏部分**/

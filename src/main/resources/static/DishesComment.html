@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html xmlns:url="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <title>DishesComment</title>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <link rel="stylesheet" href="css/NavigationBar.css"><!--导航栏 css-->
+    <script src="js/Cookie_Parameter.js"></script><!--获取cookie和参数-->
+</head>
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+    }
+
+    #app {
+        margin-right: 15%;
+        margin-left: 15%;
+    }
+
+    #id_dish_picture {
+        margin-top: 0px;
+        margin-right: 50px;
+        margin-bottom: 50px;
+        float: right;
+        width: 400px;
+        height: 300px;
+    }
+
+    #e_dish_name {
+        display: inline;
+    }
+
+    #dish_name {
+        display: inline;
+    }
+
+    #id_name {
+        width: 50%;
+        height: 50px;
+        /*background-color: wheat;*/
+    }
+
+    #star {
+        width: 50%;
+        height: 70px;
+    }
+
+    #id_star {
+        width: 150px;
+        float: left;
+        height: 40px;
+    }
+
+    #id_star_wz {
+        height: 40px;
+        font-size: 14px;
+        color: gray;
+    }
+
+    p {
+        display: inline;
+    }
+
+    #id_info {
+        width: 50%;
+        height: 200px;
+    }
+
+    .id_info_h {
+        height: 50px;
+        font-size: 14px;
+        color: gray;
+    }
+
+</style>
+<body>
+<!--导航栏部分-->
+<div id="navbar">
+    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+        <el-menu-item index="1" @click="openIndex">首页</el-menu-item>
+        <el-submenu index="2">
+            <template slot="title">
+                我的工作台
+            </template>
+            <el-menu-item index="2-1">选项1</el-menu-item>
+            <el-menu-item index="2-2">选项2</el-menu-item>
+            <el-menu-item index="2-3">选项3</el-menu-item>
+            <el-submenu index="2-4">
+                <template slot="title">
+                    选项4
+                </template>
+                <el-menu-item index="2-4-1">选项1</el-menu-item>
+                <el-menu-item index="2-4-2">选项2</el-menu-item>
+                <el-menu-item index="2-4-3">选项3</el-menu-item>
+            </el-submenu>
+        </el-submenu>
+        <el-menu-item index="3" @click="openAddDishForm">添加菜品</el-menu-item>
+        <el-menu-item index="4">
+            <!--搜索部分-->
+            <div id="search-dishes">
+                <el-input id="id_dishes_keywords_input" el-input v-model="dishes_keywords_input"
+                          placeholder="请输入你要查询菜品的关键字">
+                    <el-dropdown slot="prepend" id="id_click" trigger="click" @command="handleCommand">
+                        <span class="el-dropdown-link">查询结果<i class="el-icon-arrow-down el-icon--right"></i></span>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item v-for="dish in dishes_search_array" :command="dish">
+                                {{dish.name}},{{dish.loc_Canteen}}
+                            </el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
+                    <el-button slot="append" icon="el-icon-search" circle @click="SearchDishesByKeywords">
+                    </el-button>
+                </el-input>
+            </div>
+        </el-menu-item>
+        <el-menu-item id="id_5" index="5" @click="openModifyUserInformation"><i class="el-icon-user"
+                                                                                style="display: inline-block;"></i>
+            <p id="user_NickName" style="display: inline-block;">用户昵称</p></el-menu-item>
+    </el-menu>
+</div>
+<!--页面主体-->
+<div id="app">
+    <div style="padding-left: 50px;">
+
+        <!--菜品名称-->
+        <div id="id_name">
+            <p id="e_dish_name" style="font-size:22px;font-weight:700">菜品名称:&emsp;</p>
+            <p id="dish_name" style="font-size:22px;font-weight:700">菜品名称</p>
+        </div>
+
+        <!--菜品名称-->
+        <img :src="dish_photo" id="id_dish_picture"/>
+
+        <!--打星的一行-->
+        <div id="id_star">
+            <el-rate v-model="value"
+                     disabled
+                     show-score
+                     text-color="#ff9900"
+                     score-template="{value}">
+            </el-rate>
+        </div>
+        <div id="id_star_wz">
+            <p class="e_size2">评论数量：</p>
+            <p id="dish_comments">评论数量&emsp;</p>
+            <p class="e_size2">点赞数量：</p>
+            <p id="dish_likes">点赞数量&emsp;</p>
+            <p class="e_size2">菜品价格：</p>
+            <p id="dish_price">菜品价格</p>
+        </div>
+
+        <div id="id_info">
+            <div class="id_info_h">
+                <p id="e_dish_canteen">食堂地点：</p>
+                <p id="dish_canteen">食堂地点</p>
+            </div>
+            <div class="id_info_h">
+                <p id="e_dish_floor">楼层：</p>
+                <p id="dish_floor">楼层</p>
+            </div>
+            <div class="id_info_h">
+                <p id="e_dish_window">窗口：</p>
+                <p id="dish_window">窗口</p>
+            </div>
+            <div class="id_info_h">
+                <p id="e_dish_discription">详细描述：</p>
+                <p id="dish_discription">详细描述</p>
+            </div>
+        </div>
+
+        <dish class="id_info_h">
+            <p id="e_dish_like">我要点赞</p>
+            <i :class="star_type" @click="DishChangeLike"></i>
+        </dish>
+
+        <br/>
+        <br/>
+
+        <dish class="id_info_h">
+            <p id="e_dish_addcomment">我要写评论</p>
+            <el-button type="primary" icon="el-icon-edit" circle @click="AddDishComment"></el-button>
+        </dish>
+
+        <template>
+            <el-table :data="dish_comment_list"
+                      border
+                      style="width: 100%">
+                <el-table-column prop="commentId"
+                                 label="评论id"
+                                 width="180">
+                </el-table-column>
+                <!--用户昵称-未解决-->
+                <el-table-column prop="userId"
+                                 label="用户id"
+                                 width="180">
+                </el-table-column>
+                <el-table-column prop="time"
+                                 label="日期"
+                                 width="180">
+                </el-table-column>
+                <el-table-column prop="content"
+                                 label="评论内容">
+                </el-table-column>
+                <el-table-column prop="level"
+                                 label="星级评价"
+                                 width="180">
+                </el-table-column>
+                <el-table-column prop="photo" label="图片" min-width="20%">
+                    <template slot-scope="scope">
+                        <img :src="scope.row.photo" min-width="70" height="70"/>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作" min-width="10%">
+                    <template scope="scope">
+                        <el-button type="warning" icon="el-icon-star-off" circle
+                                   @click="handleLikeComment(scope.$index, scope.row)"></el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </template>
+
+    </div>
+</div>
+</div>
+</body>
+<script>
+    let navbar = new Vue({
+        el: '#navbar',
+        data: {
+            activeIndex: '1',
+            activeIndex2: '1',
+            dishes_keywords_input: '',
+            dishes_search_array: [],
+        },
+        mounted: function () {
+            this.getUserNickName()
+        },
+        methods: {
+
+            handleSelect(key, keyPath) {
+                console.log(key, keyPath);
+            },
+
+            //进入首页
+            openIndex: function () {
+                window.open('http://localhost:8444/index.html')
+            },
+
+            //进入添加菜品页面
+            openAddDishForm: function () {
+                window.open('http://localhost:8444/AddDishesForm.html')
+            },
+
+            //搜索栏
+            SearchDishesByKeywords: function () {
+                let DishesKeywords = this.dishes_keywords_input
+                let token_in_Cookie = getCookie("token")
+                //console.log("getCookie : " + getCookie("token"))
+                $.ajax({
+                    type: 'POST',
+                    url: "http://120.79.204.39:8444/menu/query",
+                    headers: {
+                        token: token_in_Cookie
+                    },
+                    data: {
+                        keywords: DishesKeywords
+                    },
+                    success: (res) => {
+                        console.log(res)
+                        this.dishes_search_array = res.data;
+                        console.log(this.dishes_search_array)
+
+                    },
+                    fail: (res) => {
+                        console.log(res)
+                    }
+                })
+            },
+
+            //用于进入菜品详情
+            handleCommand: function (command) {
+                let url = 'http://localhost:8444/DishesComment.html' + '?id=' + command.dishId;
+                window.open(url);
+            },
+
+            //获取用户昵称并显示
+            getUserNickName: function () {
+                let token_in_Cookie = getCookie("token")
+                //console.log("token : " + token_in_Cookie)
+                let userid_in_Cookie = getCookie("user_id")
+                //console.log("user_id : " + userid_in_Cookie)
+                $.ajax({
+                    type: 'GET',
+                    url: "http://120.79.204.39:8444/user/info",
+                    headers: {
+                        token: token_in_Cookie
+                    },
+                    data: {
+                        userId: userid_in_Cookie
+                    },
+                    success: (res) => {
+                        //console.log(res)
+                        UserNickName = document.getElementById("user_NickName")
+                        UserNickName.innerText = res.data.nickname
+                    },
+                    fail: (res) => {
+                        console.log(res)
+                    }
+                })
+            },
+
+            //打开修改个人信息页面
+            openModifyUserInformation: function () {
+                let userid_in_Cookie = getCookie("user_id")
+                console.log("user_id : " + userid_in_Cookie)
+                if(userid_in_Cookie==""){
+                    window.open('http://localhost:8444/Login.html')
+                }
+                else{
+                    window.open('http://localhost:8444/ModifyUserInformation.html')
+                }
+            },
+        },
+    })
+    let app = new Vue({
+        el: '#app',
+        data: {
+            value: 3.7,
+            star_type: "el-icon-star-off",
+            dish_comment_list: [],
+            dish_photo: '',
+        },
+        mounted: function () {
+            this.getDishData()
+            this.getDishComment()
+        },
+        methods: {
+            getDishData: function () {
+                //console.log("??")
+                let token_in_Cookie = getCookie("token")
+                //console.log("getCookie : " + getCookie("token"))
+                let dish_id = GetRequest();
+                $.ajax({
+                    type: 'GET',
+                    url: '/menu/info',
+                    headers: {
+                        token: token_in_Cookie
+                    },
+                    data: {
+                        dishId: dish_id
+                    },
+                    success: function (res) {
+                        //console.log(res)
+
+                        DishName = document.getElementById("dish_name")
+                        DishName.innerText = res.data.name
+
+                        app.dish_photo = 'http://120.79.204.39:8888/icon/' + res.data.avatar
+
+                        app.value = res.data.level
+
+                        DishPrice = document.getElementById("dish_price")
+                        DishPrice.innerText = res.data.price
+
+                        DishCanteen = document.getElementById("dish_canteen")
+                        DishCanteen.innerText = res.data.loc_Canteen
+
+                        DishFloor = document.getElementById("dish_floor")
+                        DishFloor.innerText = res.data.loc_Floor
+
+                        DishWindow = document.getElementById("dish_window")
+                        DishWindow.innerText = res.data.loc_Window
+
+                        DishDiscription = document.getElementById("dish_discription")
+                        DishDiscription.innerText = res.data.discription
+
+                        DishLikes = document.getElementById("dish_likes")
+                        DishLikes.innerText = res.data.likes
+
+                        DishComments = document.getElementById("dish_comments")
+                        DishComments.innerText = res.data.comments
+
+                    },
+                    fail: function (res) {
+                        console.log(res);
+                    }
+                })
+
+            },
+            getDishComment: function () {
+                //console.log("??")
+                let token_in_Cookie = getCookie("token")
+                //console.log("getCookie : " + getCookie("token"))
+                let dish_id = GetRequest();
+                $.ajax({
+                    type: 'POST',
+                    url: '/comment/query',
+                    headers: {
+                        token: token_in_Cookie
+                    },
+                    data: {
+                        status: 2,//根据dishId查找评论
+                        statusId: dish_id
+                    },
+                    success: function (res) {
+                        app.dish_comment_list = res.data
+                        app.dish_comment_list.forEach(function (element, index, arr) {
+                            //改变评论图片的url
+                            element.photo = 'http://120.79.204.39:8888/comment/' + element.photo
+                            //改变用户id为用户的昵称
+                            console.log(element.userId)
+                            console.log(app.ChangeCommentUserNickname(element.userId))
+                            console.log(element.userId)
+                        })
+                    },
+                    fail: function (res) {
+                        console.log(res);
+                    }
+                })
+            },
+            ChangeCommentUserNickname: function (userid) {
+                let token_in_Cookie = getCookie("token")
+                let NickName = "xxxx"
+                $.ajax({
+                    type: 'POST',
+                    url: '/user/info',
+                    headers: {
+                        token: token_in_Cookie
+                    },
+                    data: {
+                        userId: userid
+                    },
+                    success: function (res) {
+                        //userid = res.data.nickname
+                        NickName = res.data.nickname
+                        return NickName
+                    },
+                    fail: function (res) {
+                        console.log(res);
+                    }
+                })
+            },
+            DishChangeLike: function () {
+                if (app.star_type === "el-icon-star-on") {
+                    app.star_type = "el-icon-star-off"
+                    app.DishNotLike()
+                    DishLikes = document.getElementById("dish_likes")
+                    DishLikes.innerText = parseInt(DishLikes.innerText) - 1
+                }
+                else {
+                    app.star_type = "el-icon-star-on"
+                    app.DishisLike()
+                    DishLikes = document.getElementById("dish_likes")
+                    DishLikes.innerText = parseInt(DishLikes.innerText) + 1
+                }
+            },
+            DishisLike: function () {
+                let token_in_Cookie = getCookie("token")
+                //console.log("token : " + token_in_Cookie)
+                let userid_in_Cookie = getCookie("user_id")
+                //console.log("user_id : " + userid_in_Cookie)
+                let dish_id = GetRequest();
+                $.ajax({
+                    type: 'POST',
+                    url: '/like/add',
+                    headers: {
+                        token: token_in_Cookie
+                    },
+                    data: {
+                        userId: userid_in_Cookie,
+                        type: 1,
+                        like_id: dish_id,
+                    },
+                    success: function (res) {
+                        console.log(res)
+                    },
+                    fail: function (res) {
+                        console.log(res);
+                    }
+                })
+            },
+            DishNotLike: function () {
+                let token_in_Cookie = getCookie("token")
+                //console.log("token : " + token_in_Cookie)
+                let userid_in_Cookie = getCookie("user_id")
+                //console.log("user_id : " + userid_in_Cookie)
+                let dish_id = GetRequest();
+                $.ajax({
+                    type: 'POST',
+                    url: '/like/cancel',
+                    headers: {
+                        token: token_in_Cookie
+                    },
+                    data: {
+                        userId: userid_in_Cookie,
+                        type: 1,
+                        like_id: dish_id,
+                    },
+                    success: function (res) {
+                        console.log(res)
+                    },
+                    fail: function (res) {
+                        console.log(res);
+                    }
+                })
+            },
+            AddDishComment: function () {
+                let url = 'http://localhost:8444/AddDishesComment.html' + '?id=' + GetRequest()
+                window.open(url)
+            },
+            handleLikeComment: function (index, row) {
+                //console.log("index = " + index)
+                //console.log("row = " + row)
+                //console.log("评论id = " + app.dish_comment_list[index].commentId)
+                let CommentId = app.dish_comment_list[index].commentId
+                let token_in_Cookie = getCookie("token")
+                let userid_in_Cookie = getCookie("user_id")
+                let dish_id = GetRequest();
+                $.ajax({
+                    type: 'POST',
+                    url: '/like/add',
+                    headers: {
+                        token: token_in_Cookie
+                    },
+                    data: {
+                        userId: userid_in_Cookie,
+                        type: 2,
+                        typeId: CommentId
+                    },
+                    success: function (res) {
+                        console.log(res)
+                    },
+                    fail: function (res) {
+                        console.log(res);
+                    }
+                })
+            }
+        }
+    })
+</script>
+</html>

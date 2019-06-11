@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>Index</title>
+    <meta charset="UTF-8">
+    <title>添加评论</title>
     <script src="https://unpkg.com/vue/dist/vue.js"></script>
     <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
@@ -10,33 +10,6 @@
     <link rel="stylesheet" href="css/NavigationBar.css"><!--导航栏 css-->
     <script src="js/Cookie_Parameter.js"></script><!--获取cookie和参数-->
 </head>
-<style>
-
-    * {
-        box-sizing: border-box;
-    }
-
-    html, body {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-    }
-
-    img {
-        width: 100%;
-        height: 100%;
-    }
-
-    #app {
-
-    }
-
-    #id_lunbo {
-        width: 780px;
-        margin: 0 auto;
-        background-color: black;
-    }
-</style>
 <body>
 <!--导航栏部分-->
 <div id="navbar">
@@ -84,14 +57,33 @@
 </div>
 <!--页面主体-->
 <div id="app">
-    <!--走马灯 轮播图部分-->
-    <template>
-        <el-carousel id="id_lunbo" trigger="click" height="440px" :interval="5000" arrow="always">
-            <el-carousel-item v-for="(img,index) in imgList" :key="index">
-                <img :src="img.url">
-            </el-carousel-item>
-        </el-carousel>
-    </template>
+    <!--菜品评分-->
+    <el-rate v-model="dish_value" show-text></el-rate>
+
+    <!--菜品评价-->
+    <el-input
+            type="textarea"
+            placeholder="请输入内容"
+            v-model="dish_content"
+            maxlength="30"
+            show-word-limit
+    >
+    </el-input>
+
+    <!--评价图片-->
+    <el-upload
+            class="upload-demo"
+            drag
+            action="http://120.79.204.39:8444/upload/comment/"
+            multiple
+            :on-success="AddPhotoSuccess">
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+    </el-upload>
+
+    <el-button type="success" plain @click="AddDishCommend">提交评论</el-button>
+
 </div>
 </body>
 <script>
@@ -193,72 +185,52 @@
             },
         },
     })
-    let app = new Vue({
-        el: '#app',
-        data: {
-            dishes_recommand_array: [],
-            imgList: [],
+    let app=new Vue({
+        el:'#app',
+        data:{
+            dish_value:0,
+            dish_content:'',
+            dish_photo_name:'',
         },
-        mounted: function () {
-            this.GetAllDishPictUrl()
+        mounted:function () {
+
         },
-        methods: {
-
-            // RecommandDishes:function () {
-            //     console.log("work?")
-            //     let token_in_Cookie = getCookie("token")
-            //     //console.log("getCookie : " + getCookie("token"))
-            //     $.ajax({
-            //         type: 'POST',
-            //         url: '/menu/recommand',
-            //         headers: {
-            //             token: token_in_Cookie
-            //         },
-            //         data: {},
-            //         success: (res) => {
-            //             console.log("****菜品推荐结果*****")
-            //             console.log(res)
-            //             console.log("****菜品推荐结果*****")
-            //             this.dishes_recommand_array=res.data
-            //         },
-            //         fail: (res) => {
-            //             console.log(res)
-            //         }
-            //     })
-            // },
-
-            GetDishPictureUrl: function (dish_id) {
+        methods:{
+            AddDishCommend:function () {
                 let token_in_Cookie = getCookie("token")
-                //console.log("getCookie : " + getCookie("token"))
+                console.log("getCookie : " + getCookie("token"))
+                let dish_id = GetRequest();
+                let user_id= getCookie("iser_id")
+                let DishValue=app.dish_value
+                let DishContent=app.dish_content
+                let PhotoName=app.dish_photo_name
                 $.ajax({
-                    type: 'GET',
-                    url: '/menu/info',
+                    type: 'POST',
+                    url: '/comment/add',
                     headers: {
                         token: token_in_Cookie
                     },
                     data: {
-                        dishId: dish_id
+                        dishId:dish_id,
+                        userId:user_id,
+                        level: DishValue,
+                        content:DishContent,
+                        photo:PhotoName,
                     },
-                    success: (res) => {
-                        //console.log(res)
-                        let uurl = "http://120.79.204.39:8888/icon/" + res.data.avatar
-                        this.imgList.push({url: uurl})
-                    },
-                    fail: (res) => {
+                    success: function (res) {
                         console.log(res)
-                        //return "fail"
+                        let url='http://localhost:8444/DishesCommend.html' + '?id='+GetRequest()
+                        window.open(url)
+                    },
+                    fail: function (res) {
+                        console.log(res)
                     }
                 })
             },
-
-            GetAllDishPictUrl: function () {
-                let that = this
-
-                //console.log("this")
-                this.GetDishPictureUrl(1)
-                this.GetDishPictureUrl(2)
-                this.GetDishPictureUrl(3)
-                this.GetDishPictureUrl(4)
+            AddPhotoSuccess: function (response) {
+                //function(response, file, fileList)
+                console.log(response);
+                this.dish_photo_name = response.data.filename
             },
         }
     })

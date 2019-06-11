@@ -7,6 +7,8 @@
     <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <link rel="stylesheet" href="css/NavigationBar.css"><!--导航栏 css-->
+    <script src="js/Cookie_Parameter.js"></script><!--获取cookie和参数-->
 </head>
 <style>
     * {
@@ -42,6 +44,51 @@
     }
 </style>
 <body>
+<!--导航栏部分-->
+<div id="navbar">
+    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+        <el-menu-item index="1" @click="openIndex">首页</el-menu-item>
+        <el-submenu index="2">
+            <template slot="title">
+                我的工作台
+            </template>
+            <el-menu-item index="2-1">选项1</el-menu-item>
+            <el-menu-item index="2-2">选项2</el-menu-item>
+            <el-menu-item index="2-3">选项3</el-menu-item>
+            <el-submenu index="2-4">
+                <template slot="title">
+                    选项4
+                </template>
+                <el-menu-item index="2-4-1">选项1</el-menu-item>
+                <el-menu-item index="2-4-2">选项2</el-menu-item>
+                <el-menu-item index="2-4-3">选项3</el-menu-item>
+            </el-submenu>
+        </el-submenu>
+        <el-menu-item index="3" @click="openAddDishForm">添加菜品</el-menu-item>
+        <el-menu-item index="4">
+            <!--搜索部分-->
+            <div id="search-dishes">
+                <el-input id="id_dishes_keywords_input" el-input v-model="dishes_keywords_input"
+                          placeholder="请输入你要查询菜品的关键字">
+                    <el-dropdown slot="prepend" id="id_click" trigger="click" @command="handleCommand">
+                        <span class="el-dropdown-link">查询结果<i class="el-icon-arrow-down el-icon--right"></i></span>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item v-for="dish in dishes_search_array" :command="dish">
+                                {{dish.name}},{{dish.loc_Canteen}}
+                            </el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
+                    <el-button slot="append" icon="el-icon-search" circle @click="SearchDishesByKeywords">
+                    </el-button>
+                </el-input>
+            </div>
+        </el-menu-item>
+        <el-menu-item id="id_5" index="5" @click="openModifyUserInformation"><i class="el-icon-user"
+                                                                                style="display: inline-block;"></i>
+            <p id="user_NickName" style="display: inline-block;">用户昵称</p></el-menu-item>
+    </el-menu>
+</div>
+<!--页面主体-->
 <div id="app">
     <!--用户名及查重认证-->
     <div id="user-name-label">
@@ -72,9 +119,111 @@
                    :disabled="buttonDisabled">注册
         </el-button>
     </div>
+    <div id="user-login">
+        <el-button id="id_user-login-button" type="primary" @click="userLogin" id="user-login-button">已有帐号 前往登录
+        </el-button>
+    </div>
 </div>
 </body>
 <script>
+    let navbar = new Vue({
+        el: '#navbar',
+        data: {
+            activeIndex: '1',
+            activeIndex2: '1',
+            dishes_keywords_input: '',
+            dishes_search_array: [],
+        },
+        mounted: function () {
+            this.getUserNickName()
+        },
+        methods: {
+
+            handleSelect(key, keyPath) {
+                console.log(key, keyPath);
+            },
+
+            //进入首页
+            openIndex: function () {
+                window.open('http://localhost:8444/index.html')
+            },
+
+            //进入添加菜品页面
+            openAddDishForm: function () {
+                window.open('http://localhost:8444/AddDishesForm.html')
+            },
+
+            //搜索栏
+            SearchDishesByKeywords: function () {
+                let DishesKeywords = this.dishes_keywords_input
+                let token_in_Cookie = getCookie("token")
+                //console.log("getCookie : " + getCookie("token"))
+                $.ajax({
+                    type: 'POST',
+                    url: "http://120.79.204.39:8444/menu/query",
+                    headers: {
+                        token: token_in_Cookie
+                    },
+                    data: {
+                        keywords: DishesKeywords
+                    },
+                    success: (res) => {
+                        console.log(res)
+                        this.dishes_search_array = res.data;
+                        console.log(this.dishes_search_array)
+
+                    },
+                    fail: (res) => {
+                        console.log(res)
+                    }
+                })
+            },
+
+            //用于进入菜品详情
+            handleCommand: function (command) {
+                let url = 'http://localhost:8444/DishesComment.html' + '?id=' + command.dishId;
+                window.open(url);
+            },
+
+            //获取用户昵称并显示
+            getUserNickName: function () {
+                let token_in_Cookie = getCookie("token")
+                //console.log("token : " + token_in_Cookie)
+                let userid_in_Cookie = getCookie("user_id")
+                //console.log("user_id : " + userid_in_Cookie)
+                $.ajax({
+                    type: 'GET',
+                    url: "http://120.79.204.39:8444/user/info",
+                    headers: {
+                        token: token_in_Cookie
+                    },
+                    data: {
+                        userId: userid_in_Cookie
+                    },
+                    success: (res) => {
+                        //console.log(res)
+                        UserNickName = document.getElementById("user_NickName")
+                        UserNickName.innerText = res.data.nickname
+                    },
+                    fail: (res) => {
+                        console.log(res)
+                    }
+                })
+            },
+
+            //打开修改个人信息页面
+            openModifyUserInformation: function () {
+                let userid_in_Cookie = getCookie("user_id")
+                console.log("user_id : " + userid_in_Cookie)
+                if (userid_in_Cookie == "") {
+                    window.open('http://localhost:8444/Login.html')
+                }
+                else {
+                    window.open('http://localhost:8444/ModifyUserInformation.html')
+                }
+            },
+        },
+    })
     let app = new Vue({
         el: '#app',
         data: {
@@ -246,7 +395,7 @@
                         //console.log(res)
                         console.log("your id is : " + res)
                         alert("注册成功，自动跳转到登陆页面")
-                        let url='http://localhost:8444/Login.html'
+                        let url = 'http://localhost:8444/Login.html'
                         window.open(url)
                     },
                     fail: (res) => {
@@ -254,6 +403,9 @@
                         console.log("fail")
                     }
                 })
+            },
+            userLogin: function () {
+                widow.open('http://localhost:8444/Login.html')
             },
             RegisterAble: function () {
                 this.buttonDisabled = !(this.username_is_checked && this.password_is_checked && this.email_is_checked && this.vercode_is_checked);

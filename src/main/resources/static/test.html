@@ -10,21 +10,29 @@
 </head>
 <body>
 <div id="app">
-    <template>
-        <el-carousel trigger="click" height="300px" :interval="5000" arrow="always">
-            <el-carousel-item v-for="(img,index) in imgList" :key="index">
-                <!--<img :src="img.url">-->
-                <p>{{img.url}}</p>
-            </el-carousel-item>
-        </el-carousel>
-    </template>
-    <!--<template>-->
-    <!--<el-carousel indicator-position="outside">-->
-    <!--<el-carousel-item v-for="item in 4" :key="item">-->
-    <!--<h3>{{ item }}</h3>-->
-    <!--</el-carousel-item>-->
-    <!--</el-carousel>-->
-    <!--</template>-->
+    <!--列表-->
+    <el-table :data="homes" highlight-current-row v-loading="listLoading" @selection-change="selsChange" style="width: 100%;">
+        <el-table-column type="index" width="60">
+        </el-table-column>
+        <el-table-column prop="id" label="ID" min-width="15%" >
+        </el-table-column>
+        <el-table-column prop="message" label="信息" min-width="15%" >
+        </el-table-column>
+        <el-table-column prop="link" label="连接" min-width="20%" >
+        </el-table-column>
+        <el-table-column prop="image" label="图片" min-width="20%" >
+            <!-- 图片的显示 -->
+            <template   slot-scope="scope">
+                <img :src="scope.row.image"  min-width="70" height="70" />
+            </template>
+        </el-table-column>
+
+        <el-table-column label="操作" min-width="10%">
+            <template scope="scope">
+                <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+            </template>
+        </el-table-column>
+    </el-table>
 </div>
 </body>
 <script>
@@ -49,55 +57,14 @@
         el: '#app',
 
         data: {
-            imgList: [
-                {
-                    url: 'http://120.79.204.39:8888/icon/1560048086431155840bc6858a604354bc55a0ce9c576844hsly.jpg'
-                }
+            listLoading: [
+
             ],
         },
         mounted: function () {
-            this.GetAllPictUrl()
         },
         methods: {
-            GetPictureUrl: function (dish_id) {
-                let token_in_Cookie = getCookie("token")
-                console.log("getCookie : " + getCookie("token"))
-                $.ajax({
-                    type: 'GET',
-                    url: '/menu/info',
-                    headers: {
-                        token: token_in_Cookie
-                    },
-                    data: {
-                        dishId: dish_id
-                    },
-                    success: (res) => {
-                        console.log(res)
-                        let url = "http://120.79.204.39:8888/icon/" + res.data.avatar
-                        return url
-                    },
-                    fail: (res) => {
-                        console.log(res)
-                    }
-                })
-            },
 
-            GetAllPictUrl: function () {
-                // app.imgList.push({url:app.GetPictureUrl(1)})
-                // app.imgList.push({url:app.GetPictureUrl(2)})
-                // app.imgList.push({url:app.GetPictureUrl(3)})
-                // app.imgList.push({url:app.GetPictureUrl(4)})
-                let that = this
-
-                console.log("this.GetPictureUrl(1) = " + this.GetPictureUrl(1))
-
-                console.log("that.GetPictureUrl(1) = " + that.GetPictureUrl(1))
-
-                this.imgList.push({url: this.GetPictureUrl(1)})
-                this.imgList.push({url: this.GetPictureUrl(2)})
-                this.imgList.push({url: this.GetPictureUrl(3)})
-                this.imgList.push({url: this.GetPictureUrl(4)})
-            }
         }
     })
 </script>
