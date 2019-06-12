@@ -26,7 +26,13 @@
         width: 450px;
     }
 
-    .id_button {
+    #id_button_a {
+        margin: 0 auto;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        width: 450px;
+    }
+    #id_button_b {
         margin: 0 auto;
         width: 450px;
     }
@@ -65,10 +71,16 @@
     <el-input v-model="username_input" placeholder="请输入用户名" @blur="QueryUsername"></el-input>
     <p id="user-name-error"></p>
     <el-input placeholder="请输入密码" v-model="password_input" show-password></el-input>
-    <el-button class="id_button" type="primary" id="user-login-button" :disabled="buttonDisabled" @click="UserLogin">登录
-    </el-button>
-    <el-button class="id_button" type="success" id="user-register-button" @click="UserRegister">没有账号？注册一个
-    </el-button>
+    <div id="id_button_a">
+        <el-button type="primary" id="user-login-button" :disabled="buttonDisabled" @click="UserLogin" style="width:450px">
+            登录
+        </el-button>
+    </div>
+    <div id="id_button_b">
+        <el-button class="id_button_b" type="success" id="user-register-button" @click="UserRegister"style="width:450px">
+            没有账号？注册一个
+        </el-button>
+    </div>
 </div>
 <script>
     let navbar = new Vue({

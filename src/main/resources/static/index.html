@@ -187,31 +187,34 @@
         },
         mounted: function () {
             this.GetAllDishPictUrl()
+            this.RecommandDishes()
         },
         methods: {
 
-            // RecommandDishes:function () {
-            //     console.log("work?")
-            //     let token_in_Cookie = getCookie("token")
-            //     //console.log("getCookie : " + getCookie("token"))
-            //     $.ajax({
-            //         type: 'POST',
-            //         url: '/menu/recommand',
-            //         headers: {
-            //             token: token_in_Cookie
-            //         },
-            //         data: {},
-            //         success: (res) => {
-            //             console.log("****菜品推荐结果*****")
-            //             console.log(res)
-            //             console.log("****菜品推荐结果*****")
-            //             this.dishes_recommand_array=res.data
-            //         },
-            //         fail: (res) => {
-            //             console.log(res)
-            //         }
-            //     })
-            // },
+            RecommandDishes:function () {
+                console.log("work?")
+                //let token_in_Cookie = getCookie("token")
+                //console.log("getCookie : " + getCookie("token"))
+                $.ajax({
+                    type: 'POST',
+                    url: 'http://120.79.204.39:8444/menu/recommand',
+                    headers: {
+                        //token: token_in_Cookie
+                    },
+                    data: {
+
+                    },
+                    success: (res) => {
+                        console.log("****菜品推荐结果*****")
+                        console.log(res)
+                        console.log("****菜品推荐结果*****")
+                        this.dishes_recommand_array=res.data
+                    },
+                    fail: (res) => {
+                        console.log(res)
+                    }
+                })
+            },
 
             GetDishPictureUrl: function (dish_id) {
                 let token_in_Cookie = getCookie("token")
