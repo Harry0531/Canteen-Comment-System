@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>添加评论</title>
+    <meta charset="utf-8">
+    <title>个人信息</title>
     <script src="https://unpkg.com/vue/dist/vue.js"></script>
     <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
@@ -11,33 +11,18 @@
     <script src="js/Cookie_Parameter.js"></script><!--获取cookie和参数-->
 </head>
 <style>
-    #id_star {
-        margin: 0 auto;
-        width: 125px;
-        margin-top: 15px;
+    * {
+
     }
 
-    #id_content {
-        margin: 0 auto;
-        width: 450px;
-        margin-top: 20px;
-        height: 120px;
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
     }
 
-    #id_content_a {
-        height: 120px;
-    }
+    #app {
 
-    #id_sck {
-        margin: 0 auto;
-        width: 370px;
-        margin-top: 20px;
-    }
-
-    #id_button {
-        margin: 0 auto;
-        width: 320px;
-        margin-top: 30px;
     }
 </style>
 <body>
@@ -71,37 +56,23 @@
 </div>
 <!--页面主体-->
 <div id="app">
-    <!--菜品评分-->
-    <div id="id_star">
-        <el-rate v-model="dish_value" show-text></el-rate>
+    <!--用户姓名-->
+    <div id="id_name">
+        <p id="e_user_name" style="font-size:22px;font-weight:700">用户昵称：</p>
+        <p id="user_name" style="font-size:22px;font-weight:700">用户昵称</p>
     </div>
-    <!--菜品评价-->
-    <div id="id_content">
-        <el-input type="textarea"
-                  placeholder="请输入内容"
-                  v-model="dish_content"
-                  id="id_content_a"
-                  maxlength="30"
-                  show-word-limit>
-        </el-input>
+
+    <!--用户头像-->
+    <img :src="user_photo" id="id_user_picture"/>
+
+    <!--个人签名-->
+    <div id="id_motto">
+        <p id="e_user_motto" style="font-size:22px;font-weight:700">个人签名：</p>
+        <p id="user_motto" style="font-size:22px;font-weight:700">个人签名</p>
     </div>
-    <!--评价图片-->
-    <div id="id_sck">
-        <el-upload class="upload-demo"
-                   drag
-                   action="http://120.79.204.39:8444/upload/comment/"
-                   multiple
-                   :on-success="AddPhotoSuccess">
-            <i class="el-icon-upload"></i>
-            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-            <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
-        </el-upload>
-    </div>
-    <div id="id_button">
-        <el-button type="success" plain @click="AddDishCommend" style="width:320px">提交评论</el-button>
-    </div>
+
+    <el-button type="primary" @click="ModifyUserInformation">修改个人信息</el-button>
 </div>
-</body>
 <script>
     let navbar = new Vue({
         el: '#navbar',
@@ -205,50 +176,55 @@
     let app = new Vue({
         el: '#app',
         data: {
-            dish_value: 0,
-            dish_content: '',
-            dish_photo_name: '',
+            user_photo: '',
         },
         mounted: function () {
+            this.showUserInformation()
         },
         methods: {
-            AddDishCommend: function () {
+            showUserInformation: function () {
                 let token_in_Cookie = getCookie("token")
-                //console.log("getCookie : " + getCookie("token"))
-                let dish_id = GetRequest();
-                let user_id = getCookie("iser_id")
-                let DishValue = app.dish_value
-                let DishContent = app.dish_content
-                let PhotoName = app.dish_photo_name
+                let view_user_id = GetRequest()
+                console.log("view_user_id" + view_user_id)
                 $.ajax({
                     type: 'POST',
-                    url: 'http://120.79.204.39:8444/comment/add',
+                    url: "http://120.79.204.39:8444/user/info",
                     headers: {
                         token: token_in_Cookie
                     },
                     data: {
-                        dishId: dish_id,
-                        userId: user_id,
-                        level: DishValue,
-                        content: DishContent,
-                        photo: PhotoName,
+                        userId: view_user_id,
                     },
-                    success: function (res) {
+                    success: (res) => {
                         console.log(res)
-                        let url = '/DishesCommend.html' + '?id=' + GetRequest()
-                        window.open(url)
+                        UserName = document.getElementById("user_name")
+                        UserName.innerText = res.data.nickname
+
+                        app.user_photo = 'http://120.79.204.39:8888/icon/' + res.data.avatar
+
+                        UserMotto = document.getElementById("user_motto")
+                        UserMotto.innerText = res.data.motto
                     },
-                    fail: function (res) {
+                    fail: (res) => {
                         console.log(res)
                     }
                 })
             },
-            AddPhotoSuccess: function (response) {
-                //function(response, file, fileList)
-                console.log(response);
-                this.dish_photo_name = response.data.filename
+            ModifyUserInformation: function () {
+                let view_user_id = GetRequest()
+                let token_in_Cookie = getCookie("token")
+                //console.log("token : " + token_in_Cookie)
+                let userid_in_Cookie = getCookie("user_id")
+                //console.log("user_id : " + userid_in_Cookie)
+                if (view_user_id === userid_in_Cookie) {
+                    window.open('/ModifyUserInformation.html')
+                }
+                else {
+                    alert("对不起，你无法修改其他人的信息")
+                }
             },
         }
     })
 </script>
+</body>
 </html>
