@@ -140,17 +140,17 @@
         methods: {
 
             handleSelect(key, keyPath) {
-                console.log(key, keyPath);
+                //console.log(key, keyPath);
             },
 
             //进入首页
             openIndex: function () {
-                window.open('http://localhost:8444/index.html')
+                window.open('/index.html')
             },
 
             //进入添加菜品页面
             openAddDishForm: function () {
-                window.open('http://localhost:8444/AddDishesForm.html')
+                window.open('/AddDishesForm.html')
             },
 
             //搜索栏
@@ -168,9 +168,9 @@
                         keywords: DishesKeywords
                     },
                     success: (res) => {
-                        console.log(res)
+                        //console.log(res)
                         this.dishes_search_array = res.data;
-                        console.log(this.dishes_search_array)
+                        //console.log(this.dishes_search_array)
 
                     },
                     fail: (res) => {
@@ -181,7 +181,7 @@
 
             //用于进入菜品详情
             handleCommand: function (command) {
-                let url = 'http://localhost:8444/DishesComment.html' + '?id=' + command.dishId;
+                let url = '/DishesComment.html' + '?id=' + command.dishId;
                 window.open(url);
             },
 
@@ -215,11 +215,11 @@
             openModifyUserInformation: function () {
                 let userid_in_Cookie = getCookie("user_id")
                 console.log("user_id : " + userid_in_Cookie)
-                if (userid_in_Cookie == "") {
-                    window.open('http://localhost:8444/Login.html')
+                if(userid_in_Cookie==""){
+                    window.open('/Login.html')
                 }
-                else {
-                    window.open('http://localhost:8444/ModifyUserInformation.html')
+                else{
+                    window.open('/ModifyUserInformation.html')
                 }
             },
         },
@@ -254,7 +254,7 @@
                 let Username = this.username_input
                 $.ajax({
                     type: 'POST',
-                    url: '/login/verification_username',
+                    url: 'http://120.79.204.39:8444/login/verification_username',
                     data: {
                         username: Username
                     },
@@ -311,7 +311,7 @@
                 console.log(Mail.toString())
                 $.ajax({
                     type: 'POST',
-                    url: '/login/verification_username',
+                    url: 'http://120.79.204.39:8444/login/verification_username',
                     data: {
                         username: Mail
                     },
@@ -342,7 +342,7 @@
                 let mail = this.email_input
                 $.ajax({
                     type: 'POST',
-                    url: '/login/verification_code',
+                    url: 'http://120.79.204.39:8444/login/verification_code',
                     data: {
                         email: mail.toString()
                     },
@@ -350,7 +350,7 @@
                         //console.log(res)
                         //console.log(this.vercode_send)
                         this.vercode_send = res.data.code
-                        console.log("用户的验证码为 : " + res.data.code)
+                        //console.log("用户的验证码为 : " + res.data.code)
                     },
                     fail: (res) => {
                         console.log(res)
@@ -385,7 +385,7 @@
                 let eMail = this.email_input
                 $.ajax({
                     type: 'POST',
-                    url: '/login/register',
+                    url: 'http://120.79.204.39:8444/login/register',
                     data: {
                         username: Username,
                         password: Password,
@@ -393,9 +393,9 @@
                     },
                     success: (res) => {
                         //console.log(res)
-                        console.log("your id is : " + res)
+                        //console.log("your id is : " + res)
                         alert("注册成功，自动跳转到登陆页面")
-                        let url = 'http://localhost:8444/Login.html'
+                        let url = '/Login.html'
                         window.open(url)
                     },
                     fail: (res) => {
@@ -405,7 +405,7 @@
                 })
             },
             userLogin: function () {
-                window.open('http://localhost:8444/Login.html')
+                window.open('/Login.html')
             },
             RegisterAble: function () {
                 this.buttonDisabled = !(this.username_is_checked && this.password_is_checked && this.email_is_checked && this.vercode_is_checked);

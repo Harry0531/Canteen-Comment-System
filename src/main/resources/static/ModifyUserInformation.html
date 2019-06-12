@@ -139,17 +139,17 @@
         methods: {
 
             handleSelect(key, keyPath) {
-                console.log(key, keyPath);
+                //console.log(key, keyPath);
             },
 
             //进入首页
             openIndex: function () {
-                window.open('http://localhost:8444/index.html')
+                window.open('/index.html')
             },
 
             //进入添加菜品页面
             openAddDishForm: function () {
-                window.open('http://localhost:8444/AddDishesForm.html')
+                window.open('/AddDishesForm.html')
             },
 
             //搜索栏
@@ -167,9 +167,9 @@
                         keywords: DishesKeywords
                     },
                     success: (res) => {
-                        console.log(res)
+                        //console.log(res)
                         this.dishes_search_array = res.data;
-                        console.log(this.dishes_search_array)
+                        //console.log(this.dishes_search_array)
 
                     },
                     fail: (res) => {
@@ -180,7 +180,7 @@
 
             //用于进入菜品详情
             handleCommand: function (command) {
-                let url = 'http://localhost:8444/DishesComment.html' + '?id=' + command.dishId;
+                let url = '/DishesComment.html' + '?id=' + command.dishId;
                 window.open(url);
             },
 
@@ -212,7 +212,14 @@
 
             //打开修改个人信息页面
             openModifyUserInformation: function () {
-                window.open('http://localhost:8444/ModifyUserInformation.html')
+                let userid_in_Cookie = getCookie("user_id")
+                console.log("user_id : " + userid_in_Cookie)
+                if(userid_in_Cookie==""){
+                    window.open('/Login.html')
+                }
+                else{
+                    window.open('/ModifyUserInformation.html')
+                }
             },
         },
     })
@@ -229,7 +236,7 @@
         methods: {
             AddPhotoSuccess: function (response) {
                 //function(response, file, fileList)
-                console.log(response);
+                //console.log(response);
                 this.user_photo_name = response.data.filename
             },
             ModifyInformation: function () {
@@ -256,7 +263,7 @@
                         console.log(res)
                         navbar.getUserNickName()
                         alert("修改个人信息成功")
-                        window.open('http://localhost:8444/index.html')
+                        window.open('/index.html')
                     },
                     fail: (res) => {
                         console.log(res)

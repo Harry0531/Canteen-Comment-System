@@ -250,17 +250,17 @@
         methods: {
 
             handleSelect(key, keyPath) {
-                console.log(key, keyPath);
+                //console.log(key, keyPath);
             },
 
             //进入首页
             openIndex: function () {
-                window.open('http://localhost:8444/index.html')
+                window.open('/index.html')
             },
 
             //进入添加菜品页面
             openAddDishForm: function () {
-                window.open('http://localhost:8444/AddDishesForm.html')
+                window.open('/AddDishesForm.html')
             },
 
             //搜索栏
@@ -278,9 +278,9 @@
                         keywords: DishesKeywords
                     },
                     success: (res) => {
-                        console.log(res)
+                        //console.log(res)
                         this.dishes_search_array = res.data;
-                        console.log(this.dishes_search_array)
+                        //console.log(this.dishes_search_array)
 
                     },
                     fail: (res) => {
@@ -291,7 +291,7 @@
 
             //用于进入菜品详情
             handleCommand: function (command) {
-                let url = 'http://localhost:8444/DishesComment.html' + '?id=' + command.dishId;
+                let url = '/DishesComment.html' + '?id=' + command.dishId;
                 window.open(url);
             },
 
@@ -326,10 +326,10 @@
                 let userid_in_Cookie = getCookie("user_id")
                 console.log("user_id : " + userid_in_Cookie)
                 if (userid_in_Cookie == "") {
-                    window.open('http://localhost:8444/Login.html')
+                    window.open('/Login.html')
                 }
                 else {
-                    window.open('http://localhost:8444/ModifyUserInformation.html')
+                    window.open('/ModifyUserInformation.html')
                 }
             },
         },
@@ -341,7 +341,7 @@
             star_type: "el-icon-star-off",
             dish_comment_list: [],
             dish_photo: '',
-            comment_star_type:"el-icon-star-off",
+            comment_star_type: "el-icon-star-off",
         },
         mounted: function () {
             this.getDishData()
@@ -355,7 +355,7 @@
                 let dish_id = GetRequest();
                 $.ajax({
                     type: 'GET',
-                    url: '/menu/info',
+                    url: 'http://120.79.204.39:8444/menu/info',
                     headers: {
                         token: token_in_Cookie
                     },
@@ -407,7 +407,7 @@
                 let dish_id = GetRequest();
                 $.ajax({
                     type: 'POST',
-                    url: '/comment/query',
+                    url: 'http://120.79.204.39:8444/comment/query',
                     headers: {
                         token: token_in_Cookie
                     },
@@ -437,7 +437,7 @@
                 let NickName = "xxxx"
                 $.ajax({
                     type: 'POST',
-                    url: '/user/info',
+                    url: 'http://120.79.204.39:8444/user/info',
                     headers: {
                         token: token_in_Cookie
                     },
@@ -476,7 +476,7 @@
                 let dish_id = GetRequest();
                 $.ajax({
                     type: 'POST',
-                    url: '/like/add',
+                    url: 'http://120.79.204.39:8444/like/add',
                     headers: {
                         token: token_in_Cookie
                     },
@@ -501,7 +501,7 @@
                 let dish_id = GetRequest();
                 $.ajax({
                     type: 'POST',
-                    url: '/like/cancel',
+                    url: 'http://120.79.204.39:8444/like/cancel',
                     headers: {
                         token: token_in_Cookie
                     },
@@ -519,7 +519,7 @@
                 })
             },
             AddDishComment: function () {
-                let url = 'http://localhost:8444/AddDishesComment.html' + '?id=' + GetRequest()
+                let url = '/AddDishesComment.html' + '?id=' + GetRequest()
                 window.open(url)
             },
             handleLikeComment: function (index, row) {
@@ -532,7 +532,7 @@
                 let dish_id = GetRequest();
                 $.ajax({
                     type: 'POST',
-                    url: '/like/add',
+                    url: 'http://120.79.204.39:8444/like/add',
                     headers: {
                         token: token_in_Cookie
                     },

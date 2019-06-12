@@ -10,6 +10,36 @@
     <link rel="stylesheet" href="css/NavigationBar.css"><!--导航栏 css-->
     <script src="js/Cookie_Parameter.js"></script><!--获取cookie和参数-->
 </head>
+<style>
+    #id_star {
+        margin: 0 auto;
+        width: 125px;
+        margin-top: 15px;
+    }
+
+    #id_content {
+        margin: 0 auto;
+        width: 450px;
+        margin-top: 20px;
+        height: 120px;
+    }
+
+    #id_content_a {
+        height: 120px;
+    }
+
+    #id_sck {
+        margin: 0 auto;
+        width: 370px;
+        margin-top: 20px;
+    }
+
+    #id_button {
+        margin: 0 auto;
+        width: 320px;
+        margin-top: 30px;
+    }
+</style>
 <body>
 <!--导航栏部分-->
 <div id="navbar">
@@ -58,32 +88,34 @@
 <!--页面主体-->
 <div id="app">
     <!--菜品评分-->
-    <el-rate v-model="dish_value" show-text></el-rate>
-
+    <div id="id_star">
+        <el-rate v-model="dish_value" show-text></el-rate>
+    </div>
     <!--菜品评价-->
-    <el-input
-            type="textarea"
-            placeholder="请输入内容"
-            v-model="dish_content"
-            maxlength="30"
-            show-word-limit
-    >
-    </el-input>
-
+    <div id="id_content">
+        <el-input type="textarea"
+                  placeholder="请输入内容"
+                  v-model="dish_content"
+                  id="id_content_a"
+                  maxlength="30"
+                  show-word-limit>
+        </el-input>
+    </div>
     <!--评价图片-->
-    <el-upload
-            class="upload-demo"
-            drag
-            action="http://120.79.204.39:8444/upload/comment/"
-            multiple
-            :on-success="AddPhotoSuccess">
-        <i class="el-icon-upload"></i>
-        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-        <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
-    </el-upload>
-
-    <el-button type="success" plain @click="AddDishCommend">提交评论</el-button>
-
+    <div id="id_sck">
+        <el-upload class="upload-demo"
+                   drag
+                   action="http://120.79.204.39:8444/upload/comment/"
+                   multiple
+                   :on-success="AddPhotoSuccess">
+            <i class="el-icon-upload"></i>
+            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+            <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+        </el-upload>
+    </div>
+    <div id="id_button">
+        <el-button type="success" plain @click="AddDishCommend" style="width:320px">提交评论</el-button>
+    </div>
 </div>
 </body>
 <script>
@@ -99,17 +131,21 @@
             this.getUserNickName()
         },
         methods: {
+
             handleSelect(key, keyPath) {
-                console.log(key, keyPath);
+                //console.log(key, keyPath);
             },
+
             //进入首页
             openIndex: function () {
-                window.open('http://localhost:8444/index.html')
+                window.open('/index.html')
             },
+
             //进入添加菜品页面
             openAddDishForm: function () {
-                window.open('http://localhost:8444/AddDishesForm.html')
+                window.open('/AddDishesForm.html')
             },
+
             //搜索栏
             SearchDishesByKeywords: function () {
                 let DishesKeywords = this.dishes_keywords_input
@@ -125,20 +161,23 @@
                         keywords: DishesKeywords
                     },
                     success: (res) => {
-                        console.log(res)
+                        //console.log(res)
                         this.dishes_search_array = res.data;
-                        console.log(this.dishes_search_array)
+                        //console.log(this.dishes_search_array)
+
                     },
                     fail: (res) => {
                         console.log(res)
                     }
                 })
             },
+
             //用于进入菜品详情
             handleCommand: function (command) {
-                let url = 'http://localhost:8444/DishesComment.html' + '?id=' + command.dishId;
+                let url = '/DishesComment.html' + '?id=' + command.dishId;
                 window.open(url);
             },
+
             //获取用户昵称并显示
             getUserNickName: function () {
                 let token_in_Cookie = getCookie("token")
@@ -164,53 +203,54 @@
                     }
                 })
             },
+
             //打开修改个人信息页面
             openModifyUserInformation: function () {
                 let userid_in_Cookie = getCookie("user_id")
                 console.log("user_id : " + userid_in_Cookie)
                 if(userid_in_Cookie==""){
-                    window.open('http://localhost:8444/Login.html')
+                    window.open('/Login.html')
                 }
                 else{
-                    window.open('http://localhost:8444/ModifyUserInformation.html')
+                    window.open('/ModifyUserInformation.html')
                 }
             },
         },
     })
-    let app=new Vue({
-        el:'#app',
-        data:{
-            dish_value:0,
-            dish_content:'',
-            dish_photo_name:'',
+    let app = new Vue({
+        el: '#app',
+        data: {
+            dish_value: 0,
+            dish_content: '',
+            dish_photo_name: '',
         },
-        mounted:function () {
+        mounted: function () {
         },
-        methods:{
-            AddDishCommend:function () {
+        methods: {
+            AddDishCommend: function () {
                 let token_in_Cookie = getCookie("token")
-                console.log("getCookie : " + getCookie("token"))
+                //console.log("getCookie : " + getCookie("token"))
                 let dish_id = GetRequest();
-                let user_id= getCookie("iser_id")
-                let DishValue=app.dish_value
-                let DishContent=app.dish_content
-                let PhotoName=app.dish_photo_name
+                let user_id = getCookie("iser_id")
+                let DishValue = app.dish_value
+                let DishContent = app.dish_content
+                let PhotoName = app.dish_photo_name
                 $.ajax({
                     type: 'POST',
-                    url: '/comment/add',
+                    url: 'http://120.79.204.39:8444/comment/add',
                     headers: {
                         token: token_in_Cookie
                     },
                     data: {
-                        dishId:dish_id,
-                        userId:user_id,
+                        dishId: dish_id,
+                        userId: user_id,
                         level: DishValue,
-                        content:DishContent,
-                        photo:PhotoName,
+                        content: DishContent,
+                        photo: PhotoName,
                     },
                     success: function (res) {
                         console.log(res)
-                        let url='http://localhost:8444/DishesCommend.html' + '?id='+GetRequest()
+                        let url = '/DishesCommend.html' + '?id=' + GetRequest()
                         window.open(url)
                     },
                     fail: function (res) {
