@@ -331,6 +331,7 @@
         mounted: function () {
             this.getDishData()
             this.getDishComment()
+            this.testLikeifDish()
         },
         methods: {
             getDishData: function () {
@@ -348,7 +349,7 @@
                         dishId: dish_id
                     },
                     success: function (res) {
-                        //console.log(res)
+                        console.log(res)
 
                         DishName = document.getElementById("dish_name")
                         DishName.innerText = res.data.name
@@ -508,9 +509,6 @@
                 window.open(url)
             },
             handleLikeComment: function (index, row) {
-                //console.log("index = " + index)
-                //console.log("row = " + row)
-                //console.log("评论id = " + app.dish_comment_list[index].commentId)
                 let CommentId = app.dish_comment_list[index].commentId
                 let token_in_Cookie = getCookie("token")
                 let userid_in_Cookie = getCookie("user_id")
@@ -529,6 +527,37 @@
                     success: function (res) {
                         console.log(res)
                         alert(res.msg)
+                    },
+                    fail: function (res) {
+                        console.log(res);
+                    }
+                })
+            },
+            testLikeifDish: function () {
+                let token_in_Cookie = getCookie("token")
+                let userid_in_Cookie = getCookie("user_id")
+                let dish_id = GetRequest();
+                $.ajax({
+                    type: 'POST',
+                    url: 'http://120.79.204.39:8444/like/add',
+                    headers: {
+                        token: token_in_Cookie
+                    },
+                    data: {
+                        userId: userid_in_Cookie,
+                        type: 1,
+                        typeId: dish_id
+                    },
+                    success: function (res) {
+                        //console.log(res.msg)
+                        if (res.msg === "已经点过赞了!") {
+                            app.star_type = "el-icon-star-on"
+                        }
+                        else {
+                            app.DishNotLike()
+                            DishLikes = document.getElementById("dish_likes")
+                            DishLikes.innerText = parseInt(DishLikes.innerText) - 1
+                        }
                     },
                     fail: function (res) {
                         console.log(res);

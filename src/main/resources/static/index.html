@@ -79,7 +79,6 @@
 </div>
 </body>
 <script>
-
     let navbar = new Vue({
         el: '#navbar',
         data: {
@@ -183,16 +182,18 @@
         el: '#app',
         data: {
             dishes_recommand_array: [],
+            dishes_recommand_photo: [],
+            dishes_recommand_dishid: [],
+            dishes_recommand_name: [],
             imgUrlList: [],
         },
         mounted: function () {
-            this.GetAllDishPictUrl()
+            //this.GetAllDishPictUrl()
             this.RecommandDishes()
         },
         methods: {
 
-            RecommandDishes:function () {
-                console.log("work?")
+            RecommandDishes: function () {
                 //let token_in_Cookie = getCookie("token")
                 //console.log("getCookie : " + getCookie("token"))
                 $.ajax({
@@ -201,14 +202,31 @@
                     headers: {
                         //token: token_in_Cookie
                     },
-                    data: {
-
-                    },
+                    data: {},
                     success: (res) => {
-                        console.log("****菜品推荐结果*****")
-                        console.log(res)
-                        console.log("****菜品推荐结果*****")
-                        this.dishes_recommand_array=res.data
+                        //console.log(res.data[0].avatar)
+                        let uurl = "http://120.79.204.39:8888/icon/" + res.data[0].avatar
+                        let idd = res.data[0].dishId
+                        this.imgUrlList.push({url: uurl})
+                        this.dishes_recommand_dishid.push({dishId: idd})
+
+                        //console.log(res.data[1].avatar)
+                        uurl = "http://120.79.204.39:8888/icon/" + res.data[1].avatar
+                        idd = res.data[1].dishId
+                        this.imgUrlList.push({url: uurl})
+                        this.dishes_recommand_dishid.push({dishId: idd})
+
+                        //console.log(res.data[2].avatar)
+                        uurl = "http://120.79.204.39:8888/icon/" + res.data[2].avatar
+                        idd = res.data[2].dishId
+                        this.imgUrlList.push({url: uurl})
+                        this.dishes_recommand_dishid.push({dishId: idd})
+
+                        //console.log(res.data[3].avatar)
+                        uurl = "http://120.79.204.39:8888/icon/" + res.data[3].avatar
+                        idd = res.data[3].dishId
+                        this.imgUrlList.push({url: uurl})
+                        this.dishes_recommand_dishid.push({dishId: idd})
                     },
                     fail: (res) => {
                         console.log(res)
@@ -251,7 +269,8 @@
             },
 
             toDish: function (index) {
-                let dish_id = parseInt(index) + 1
+                let dish_id = app.dishes_recommand_dishid[index].dishId
+                console.log(dish_id)
                 let url = '/DishesComment.html' + '?id=' + dish_id;
                 window.open(url);
             }
