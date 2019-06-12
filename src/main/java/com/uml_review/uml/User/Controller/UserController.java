@@ -41,7 +41,6 @@ public class UserController {
             else  return  ResultUtil.success(user);
         }else{
             user = userMapper.user_info(userId);
-            user = userMapper.user_info(Integer.parseInt(Id));
             if(user ==null ) return ResultUtil.error(500,"未知错误");
             else  return ResultUtil.success(user);
         }
