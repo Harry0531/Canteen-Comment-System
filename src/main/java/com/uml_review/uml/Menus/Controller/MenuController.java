@@ -52,7 +52,7 @@ public class MenuController {
         }
     }
 
-    @UserLoginToken
+    @PassToken
     @RequestMapping("info")
     public Object dish_Info(
             @RequestParam Integer dishId,
@@ -156,12 +156,13 @@ public class MenuController {
         data.clear();
         String token = request.getHeader("token");
 
-        long currentTime = System.currentTimeMillis() - 24 * 60 * 60 * 1000;
+        long currentTime = System.currentTimeMillis() - 7*24 * 60 * 60 * 1000;
         Date date = new Date(currentTime);
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         List<Dish> ans= menuMapper.recommand(df.format(date));
 
+        if(token == null) return ResultUtil.success(ans);
         ans = dish_convert(ans,token,1);
         if(ans == null) return ResultUtil.error(500,"未知错误");
         else return ResultUtil.success(ans);
