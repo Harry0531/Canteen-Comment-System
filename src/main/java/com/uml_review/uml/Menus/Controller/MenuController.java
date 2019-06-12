@@ -2,6 +2,7 @@ package com.uml_review.uml.Menus.Controller;
 
 import com.auth0.jwt.JWT;
 import com.uml_review.uml.Like.Mapper.LikeMapper;
+import com.uml_review.uml.Utils.Annotation.PassToken;
 import com.uml_review.uml.Utils.Annotation.UserLoginToken;
 import com.uml_review.uml.Menus.Entity.Dish;
 import com.uml_review.uml.Menus.Entity.Str;
@@ -147,7 +148,7 @@ public class MenuController {
         }
 
 
-    @UserLoginToken
+    @PassToken
     @RequestMapping("recommand")
     public  Object dish_recommand(
             HttpServletRequest request
