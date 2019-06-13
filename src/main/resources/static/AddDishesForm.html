@@ -332,6 +332,7 @@
                         discription: Discription,
                     },
                     success: (res) => {
+                        alert("添加菜品 "+Name+" 成功")
                         console.log("菜品ID为 ： " + res.data.dish_id)
                         let url = '/index.html'
                         window.open(url)
