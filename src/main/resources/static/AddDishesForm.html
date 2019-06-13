@@ -127,7 +127,7 @@
     <!--食堂地点-->
     <div id="id_dd">
         <template>
-            <el-select stv-model="dish_canteen" filterable placeholder="请选择食堂地点" style="width:370px">
+            <el-select v-model="dish_canteen" filterable placeholder="请选择食堂地点" style="width:370px">
                 <el-option v-for="item in Canteen_options"
                            :key="item.value"
                            :label="item.label"
@@ -313,9 +313,14 @@
                 let Loc_Floor = this.dish_floor
                 let Loc_Window = this.dish_window
                 let Discription = this.dish_discription
+                let token_in_Cookie = getCookie("token")
+                console.log("token:"+token_in_Cookie)
                 $.ajax({
                     type: 'POST',
-                    url: 'http://120.79.204.39:8444/login/verification_username',
+                    url: 'http://120.79.204.39:8444/menu/add',
+                    headers: {
+                        token: token_in_Cookie
+                    },
                     data: {
                         name: Name,
                         avatar: Avatar,
