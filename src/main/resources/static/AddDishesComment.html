@@ -214,9 +214,8 @@
         methods: {
             AddDishCommend: function () {
                 let token_in_Cookie = getCookie("token")
-                //console.log("getCookie : " + getCookie("token"))
                 let dish_id = GetRequest();
-                let user_id = getCookie("iser_id")
+                let user_id = getCookie("user_id")
                 let DishValue = app.dish_value
                 let DishContent = app.dish_content
                 let PhotoName = app.dish_photo_name
@@ -235,7 +234,7 @@
                     },
                     success: function (res) {
                         console.log(res)
-                        let url = '/DishesCommend.html' + '?id=' + GetRequest()
+                        let url = '/DishesComment.html' + '?id=' + GetRequest()
                         window.open(url)
                     },
                     fail: function (res) {
