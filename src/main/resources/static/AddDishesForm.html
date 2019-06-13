@@ -121,7 +121,8 @@
     </div>
     <!--菜品价格-->
     <div id="id_jg">
-        <el-input placeholder="请填写价格" suffix-icon="el-icon-money" v-model="dish_price" type="number"></el-input>
+        <el-input placeholder="请填写价格" suffix-icon="el-icon-money" v-model="dish_price" type="number" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+                  onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'0')}else{this.value=this.value.replace(/\D/g,'')}"></el-input>
     </div>
     <!--食堂地点-->
     <div id="id_dd">
@@ -282,7 +283,7 @@
                     label: '良乡-中食堂'
                 }
             ],
-            value: '',
+            //value: '',
             dish_name: '',
             // 照片
             dish_photo_name: '',
@@ -312,10 +313,6 @@
                 let Loc_Floor = this.dish_floor
                 let Loc_Window = this.dish_window
                 let Discription = this.dish_discription
-                //console.log("Name = " + Name);
-                //console.log(Loc_Canteen)
-                //console.log("Avatar = " + Avatar);
-                //console.log("Level = " + Level);
                 $.ajax({
                     type: 'POST',
                     url: 'http://120.79.204.39:8444/login/verification_username',
